@@ -137,6 +137,81 @@ a{
 #logout:hover{
     background:darkred;
 }
+/* =========================
+   MOBILE DESIGN
+========================= */
+
+@media (max-width: 600px) {
+
+    body {
+        margin: 0;
+        padding: 20px 10px 90px 10px;
+        width: 100%;
+        min-height: 100vh;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+
+
+    h1 {
+        text-align: center;
+        font-size: 24px;
+        margin: 5px 0 25px 0;
+    }
+
+
+    /* ALL FOLDER / MENU BUTTONS */
+
+    div {
+        display: block;
+
+        width: 85%;
+        max-width: 400px;
+
+        box-sizing: border-box;
+
+        margin: 18px auto;
+
+        padding: 20px 15px;
+
+        font-size: 24px;
+
+        text-align: center;
+
+        border-radius: 50px;
+    }
+
+
+    /* LINK */
+
+    a {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+
+    /* LOGOUT */
+
+    #logout {
+        position: fixed;
+
+        left: 15px;
+        bottom: 15px;
+
+        right: auto;
+        top: auto;
+
+        width: auto;
+
+        padding: 12px 20px;
+
+        font-size: 15px;
+
+        z-index: 9999;
+    }
+
+}
 
 </style>
 
@@ -151,7 +226,9 @@ a{
 <button id="logout">🚪 Logout</button>
 
 <script src="notes.js"></script>
-    <script type="module" src="auth-guard.js"></script>
+
+<script type="module" src="auth-guard.js"></script>
+<script type="module" src="notes.js"></script>
 
 </body>
 </html>
