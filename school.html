@@ -217,6 +217,50 @@ body{
     background-color: black;
     
 }
+
+@media (max-width: 600px) {
+
+    body {
+        width: 100%;
+        margin: 0;
+        padding: 10px;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+
+    .folder {
+        width: 90%;
+        max-width: 350px;
+        margin: 15px auto;
+        box-sizing: border-box;
+        font-size: 24px;
+    }
+
+    #gallery {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 15px;
+        box-sizing: border-box;
+    }
+
+    #gallery img {
+        width: 100% !important;
+        height: auto !important;
+        max-width: 350px;
+        margin: auto !important;
+        display: block;
+    }
+
+    #logout {
+        position: fixed;
+        left: 15px;
+        bottom: 15px;
+        top: auto;
+        right: auto;
+        z-index: 9999;
+    }
+}
     </style>
 </head>
 <body>
@@ -270,9 +314,9 @@ body{
 
 
 <!-- <script src="school.js"></script> -->
-    <script type="module" src="school.js"></script>
-    <script type="module" src="auth-guard.js"></script>
+<script type="module" src="school.js"></script>
 
+<script type="module" src="auth-guard.js"></script>
 
 </body>
 </html>
