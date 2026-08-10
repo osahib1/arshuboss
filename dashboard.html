@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Dashboard</title>
-<link rel="stylesheet" href="note.html">
+<!-- <link rel="stylesheet" href="note.html"> -->
 <style>
 
 body{
@@ -12,8 +14,6 @@ background:black;
 color:white;
 
 font-family:Arial;
-
-/* padding:40px; */
 
 }
 
@@ -26,17 +26,11 @@ margin:20px;
 background:#222;
 border-radius:65px;
 text-align:center;
-font-size:25px;
+font-size:25px; }
 
-text-emphasis-color: orange;
-/* cursor:pointer; */
+text-emphasis-color { 
+   text-emphasis-color: orange;
 }
-
-
-    /* folder:hover{
-   
-     } */
-
       div:hover{
     transform:scale(1.03);
     /* transition:0.1s; */
@@ -52,28 +46,6 @@ a{
 
 }
 
-
-/* a{
-    width:200px;
-
-padding:20px;
-
-margin:20px;
-
-background:#222;
-
-border-radius:10px;
-
-display:inline-block;
-
-text-align:center;
-
-font-size:25px;
-
-cursor:pointer;
-} */
-
-/* } */
 
 #logout{
     position: fixed;
@@ -98,6 +70,83 @@ h1{
 
 
 }
+
+
+@media screen and (max-width: 600px) {
+
+    body {
+        margin: 0 !important;
+        padding: 20px 15px 100px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+        text-align: center !important;
+    }
+
+    h1 {
+        font-size: 24px !important;
+        margin: 10px 0 30px !important;
+        text-align: center !important;
+    }
+
+    /* HAR FOLDER KO EK ALAG LINE */
+    body > div {
+        display: block !important;
+
+        width: 90% !important;
+        max-width: 400px !important;
+
+        margin: 20px auto !important;
+        padding: 0 !important;
+
+        box-sizing: border-box !important;
+
+        background: transparent !important;
+    }
+
+    /* FOLDER BUTTON */
+    body > div > a.folder {
+        display: block !important;
+
+        width: 100% !important;
+
+        box-sizing: border-box !important;
+
+        padding: 20px 15px !important;
+
+        margin: 0 !important;
+
+        background: #222 !important;
+
+        border-radius: 50px !important;
+
+        text-align: center !important;
+
+        font-size: 24px !important;
+
+        color: white !important;
+
+        text-decoration: none !important;
+    }
+
+    /* LOGOUT */
+    #logout {
+        position: fixed !important;
+
+        left: 15px !important;
+        bottom: 15px !important;
+
+        right: auto !important;
+        top: auto !important;
+
+        margin: 0 !important;
+
+        z-index: 99999 !important;
+    }
+}
+
+   
+
 </style>
 
 </head>
@@ -112,10 +161,10 @@ h1{
 <div><a class="folder" href="document1.html">📁Documents</a></div>
 
 <button id="logout">🚪 Logout</button>
-
-<script src="dashboard.js"></script>
-    <script type="module" src="auth-guard.js"></script>
-
+<!-- 
+<script src="dashboard.js"></script> -->
+<script type="module" src="dashboard.js"></script>
+<script type="module" src="auth-guard.js"></script>
 <!-- 
   <div class="folder">📁 Passwords</div>
 
@@ -125,17 +174,3 @@ h1{
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
