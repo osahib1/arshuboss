@@ -3,7 +3,8 @@ import { initializeApp } from
 
 import {
     getAuth,
-    onAuthStateChanged
+    onAuthStateChanged,
+    signOut
 } from
 "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 
@@ -20,10 +21,28 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-onAuthStateChanged(auth, function(user) {
+const SESSION_TIME = 24 * 60 * 60 * 1000;
+
+onAuthStateChanged(auth, async function(user) {
 
     if (!user) {
         window.location.replace("index.html");
+        return;
     }
 
+    let loginTime = localStorage.getItem("loginTime");
+
+    if (!loginTime) {
+        localStorage.setItem("loginTime", Date.now().toString());
+        loginTime = Date.now().toString();
+    }
+
+    if (Date.now() - Number(loginTime) >= SESSION_TIME) {
+
+        localStorage.removeItem("loginTime");
+
+        await signOut(auth);
+
+        window.location.replace("index.html");
+    }
 });
