@@ -7,71 +7,184 @@
 <title>Dashboard</title>
 <!-- <link rel="stylesheet" href="note.html"> -->
 <style>
+/* =========================
+   RESET
+========================= */
 
-body{
-
-background:black;
-color:white;
-
-font-family:Arial;
-
-}
-
-div{
-display:inline-block;
-/* transition: 1s; */
-width:200px;
-padding:20px;
-margin:20px;
-background:#222;
-border-radius:65px;
-text-align:center;
-font-size:25px; }
-
-text-emphasis-color { 
-   text-emphasis-color: orange;
-}
-      div:hover{
-    transform:scale(1.03);
-    /* transition:0.1s; */
-    /* background-color: #222; */
-    color: black ;
-    background-color:rgb(79, 76, 69);
-     
-     }
- 
-a{
-    text-decoration: none;
-        color: rgb(248 248 248);
-
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
 
-#logout{
-    position: fixed;
-    right: 91%;
-    top: 90%;
-    background: red;
+/* =========================
+   BODY / BACKGROUND
+========================= */
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    width: 100%;
+
+    background-color: black;
+    background-image: url("image/dasbord.jpg");
+
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+
     color: white;
+
+
+}
+
+
+/* =========================
+   HEADING
+========================= */
+
+h1 {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 28px;
+}
+
+
+/* =========================
+   FOLDERS
+========================= */
+
+div {
+  display: inline-block;
+    width: 218px;
+    padding: 19px;
+    margin: 16px;
+    background: #1e2343;
+    border-radius: 32px;
+    text-align: center;
+    font-size: 24px;
+    color: white;
+}
+
+
+/* =========================
+   FOLDER LINK
+========================= */
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+
+/* =========================
+   HOVER
+========================= */
+
+div:hover {
+    transform: scale(1.03);
+
+    color: black;
+
+    background-color: rgb(79, 76, 69);
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+#logout {
+    position: fixed;
+
+    left: 30px;
+    bottom: 30px;
+
+    background: red;
+
+    color: white;
+
     border: none;
+
     padding: 11px 17px;
+
     border-radius: 8px;
+
     cursor: pointer;
 }
 
-#logout:hover{
-    background:darkred;
+
+#logout:hover {
+    background: darkred;
 }
 
-h1{
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    body {
+        min-height: 100vh;
+
+        padding: 15px 10px 90px 10px;
+
+        background-size: cover;
+        background-position: center center;
+
         text-align: center;
-    margin-top: -3px;
-    font-size: 28px;
+    }
 
 
+    h1 {
+        font-size: 24px;
+
+        margin: 10px 0 25px 0;
+    }
+
+
+    div {
+        display: block;
+
+        width: 85%;
+
+        max-width: 350px;
+
+        margin: 18px auto;
+
+        padding: 18px 15px;
+
+        font-size: 22px;
+
+        border-radius: 50px;
+    }
+
+
+    div a {
+        display: block;
+
+        width: 100%;
+    }
+
+
+    #logout {
+        position: fixed;
+
+        left: 15px;
+        bottom: 15px;
+
+        right: auto;
+        top: auto;
+
+        padding: 12px 20px;
+
+        z-index: 9999;
+    }
 }
-
-
 @media screen and (max-width: 600px) {
 
     body {
@@ -145,20 +258,273 @@ h1{
     }
 }
 
-   
 
+#welcomeScreen {
+    position: fixed !important;
+
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+
+    width: 100vw !important;
+    height: 100vh !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: #000 !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    z-index: 999999 !important;
+
+    border: none !important;
+    border-radius: 0 !important;
+
+    animation: welcomeFadeOut 3s ease forwards;
+}
+
+
+/* Main content */
+
+#welcomeContent {
+    width: auto !important;
+    height: auto !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    background: transparent !important;
+
+    border: none !important;
+    border-radius: 0 !important;
+
+    box-shadow: none !important;
+
+    text-align: center !important;
+
+    color: white !important;
+
+    animation: welcomeZoom 0.8s ease;
+}
+
+
+/* Lock */
+
+#welcomeLock {
+    background: transparent !important;
+
+    font-size: 90px;
+
+    margin: 0 0 20px 0 !important;
+    padding: 0 !important;
+
+    border: none !important;
+    border-radius: 0 !important;
+
+    animation: lockPop 0.8s ease;
+}
+
+
+/* Welcome */
+
+#welcomeTitle {
+    background: transparent !important;
+
+    color: white !important;
+
+    font-size: 52px !important;
+    font-weight: bold !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border: none !important;
+
+    animation: textUp 0.8s ease;
+}
+
+
+/* Arshus Fan */
+
+#welcomeName {
+    background: transparent !important;
+
+    color: white !important;
+
+    font-size: 46px !important;
+    font-weight: bold !important;
+
+    margin: 8px 0 0 0 !important;
+    padding: 0 !important;
+
+    border: none !important;
+
+    animation: textUp 1s ease;
+}
+
+
+/* ==============================
+   ANIMATIONS
+================================ */
+
+@keyframes welcomeZoom {
+
+    from {
+        transform: scale(0.6);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+}
+
+
+@keyframes lockPop {
+
+    0% {
+        transform: scale(0.3) rotate(-20deg);
+        opacity: 0;
+    }
+
+    60% {
+        transform: scale(1.2) rotate(5deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1) rotate(0);
+        opacity: 1;
+    }
+
+}
+
+
+@keyframes textUp {
+
+    from {
+        transform: translateY(25px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+}
+
+
+@keyframes welcomeFadeOut {
+
+    0% {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    75% {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    100% {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+}
+
+
+/* ==============================
+   PHONE
+================================ */
+
+@media (max-width: 600px) {
+
+    #welcomeLock {
+        font-size: 70px;
+    }
+
+    #welcomeTitle {
+        font-size: 38px !important;
+    }
+
+    #welcomeName {
+        font-size: 34px !important;
+    }
+
+}
+
+#welcomeScreen {
+    display: none;
+
+    position: fixed;
+    inset: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    background: black;
+
+    align-items: center;
+    justify-content: center;
+
+    z-index: 999999;
+}
+    
 </style>
+
 
 </head>
 
 <body>
-<h1>welcome back don bhai🥳</h1>
+<!-- <h1>welcome back don bhai🥳</h1> -->
 
 <div><a class="folder" href="notes.html">📁Notes</a></div>
 <div><a class="folder" href="password.html">📁Passwords</a></div>
 <div><a class="folder" href="Photo.html"> 📁Photos</a></div>
 
-<div><a class="folder" href="document1.html">📁Documents</a></div>
+<div><a class="folder" href="phone.html">📁Phone</a></div>
+
+<!-- <div id="welcomeScreen">
+    <div class="welcome-lock">🔓</div>
+    <h1>Welcome Arshus Fan</h1>
+</div> -->
+
+<div id="welcomeScreen">
+    <div id="welcomeContent">
+
+        <div id="welcomeLock">👿</div>
+
+        <div id="welcomeTitle">Welcome Jamal </div>
+
+        <div id="welcomeName"></div>
+
+    </div>
+</div>
+
+<script>
+const welcomeScreen = document.getElementById("welcomeScreen");
+
+if (sessionStorage.getItem("justLoggedIn") === "yes") {
+
+    welcomeScreen.style.display = "flex";
+
+    sessionStorage.removeItem("justLoggedIn");
+
+    setTimeout(function () {
+        welcomeScreen.style.display = "none";
+    }, 3000);
+
+}
+</script>
+
 
 <button id="logout">🚪 Logout</button>
 <!-- 
@@ -170,7 +536,11 @@ h1{
 
 <div class="folder">📁 Photos</div>
 
+
 <div class="folder">📁 Documents</div> -->
 
+
+
+</script>
 </body>
 </html>
