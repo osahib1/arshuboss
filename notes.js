@@ -1,3 +1,13 @@
+// document.getElementById("logout").addEventListener("click", function () {
+
+//     let check = confirm("Kya aap logout karna chahte hain?");
+
+//     if (check) {
+//         window.location.href = "index.html";
+//     }
+
+// });
+
 
 import { initializeApp, getApps, getApp } from
 "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
