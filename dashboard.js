@@ -1,3 +1,13 @@
+// document.getElementById("logout").addEventListener("click", function () {
+
+//     let check = confirm("jaldi yes karo");
+
+//     if (check) {
+//         window.location.href = "index.html";
+//     }
+
+// });
+
 
 import { initializeApp, getApps, getApp } from
 "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
