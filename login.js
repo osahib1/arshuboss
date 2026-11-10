@@ -56,7 +56,7 @@ loginBtn.addEventListener(
         ) {
 
             alert(
-                "Email aur Password bharo."
+                "Enter Email Or Password."
             );
 
             return;
@@ -99,7 +99,7 @@ loginBtn.addEventListener(
             console.log(error);
 
             alert(
-                "Wrong Email or Password"
+                "BSDK SAHI DAAL"
             );
 
         });
