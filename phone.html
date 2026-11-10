@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Numbers</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+
+            background: black;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .number-box {
+            width: 100%;
+            max-width: 500px;
+            margin: auto;
+
+            background: #222;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 13px;
+            margin: 8px 0;
+
+            border: none;
+            border-radius: 8px;
+
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        #saveNumber {
+            width: 100%;
+            padding: 13px;
+
+            border: none;
+            border-radius: 8px;
+
+            background: #1683ff;
+            color: white;
+
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        #saveNumber:hover {
+            background: #006edb;
+        }
+
+        #numberList {
+            width: 100%;
+            max-width: 500px;
+            margin: 25px auto;
+        }
+
+        .number-item {
+            background: #222;
+
+            padding: 18px;
+            margin: 15px 0;
+
+            border-radius: 12px;
+        }
+
+        .number-item h3 {
+            margin-top: 0;
+        }
+
+        .number-item p {
+            word-break: break-word;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .buttons button {
+            padding: 9px 14px;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        .edit-btn {
+            background: orange;
+            color: black;
+        }
+
+        .delete-btn {
+            background: red;
+            color: white;
+        }
+
+        .back-btn {
+            display: block;
+            width: 120px;
+
+            margin: 25px auto;
+
+            padding: 10px;
+
+            text-align: center;
+
+            background: #333;
+            color: white;
+
+            text-decoration: none;
+
+            border-radius: 8px;
+        }
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 15px 10px 40px;
+            }
+
+            .number-box,
+            #numberList {
+                width: 95%;
+            }
+
+            .buttons {
+                flex-wrap: wrap;
+            }
+
+       
+        }
+#searchNumber {
+    display: block;
+    width: 243px;
+    padding: 7px 14px;
+    margin-left: calc(42% - 624px);
+    margin-top: -67px;
+    margin-bottom: 20px;
+    border: none;
+    border-radius: 21px;
+        font-size: 14px;
+    }
+
+    /* #searchNumber {
+    display: block;
+    width: 250px;
+    padding: 10px 14px;
+
+    margin: 10px 0 20px 0;
+
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+} */
+
+
+/* PHONE / MOBILE */
+
+@media (max-width: 1200px) {
+
+    #searchNumber {
+        width: 220px;
+        margin: 10px auto 20px auto;
+        font-size: 14px;
+    }
+
+}
+
+    </style>
+
+</head>
+
+<body>
+
+
+<h1>Phone Numbers</h1>
+
+<p id="searchResult"
+   style="text-align:center; margin:5px 0 15px; font-size:14px;">
+</p>
+
+<input
+    type="search"
+    id="searchNumber"
+    placeholder="Search Name, Phone or Note..."
+>
+
+<div class="number-box">
+
+    <input
+        type="text"
+        id="name"
+        placeholder="Name"
+    >
+
+    <input
+        type="tel"
+        id="phone"
+        placeholder="Phone Number"
+    >
+
+    <textarea
+        id="note"
+        placeholder="Note (optional)"
+    ></textarea>
+
+
+    <button id="saveNumber">
+        Save Number
+    </button>
+
+</div>
+
+
+<div id="numberList"></div>
+
+
+<a
+    href="dashboard.html"
+    class="back-btn">
+    ← Back
+</a>
+
+
+
+
+<script
+    type="module"
+    src="phone.js">
+</script>
+
+
+<script
+    type="module"
+    src="auth-guard.js">
+</script>
+
+
+</body>
+
+</html>
