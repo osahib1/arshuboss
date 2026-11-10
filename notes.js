@@ -54,7 +54,7 @@ document.getElementById("logout").addEventListener(
     async function () {
 
         let check = confirm(
-            "Kya aap logout karna chahte ho?"
+            "MEOW?"
         );
 
         if (!check) {
