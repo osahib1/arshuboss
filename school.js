@@ -902,16 +902,16 @@ import {
 } from "firebase/firestore";
 
 async function showFirebasePhotos() {
-  const gallery = document.getElementById("gallery");
+  const gallery = document.getElementById("school");
 
   const photosRef = collection(
     db,
     "users",
     auth.currentUser.uid,
-    "photos"
+    "school"
   );
 
-  const snapshot = await getDocs(photosRef);
+  const snapshot = await getDocs(schoolRef);
 
   gallery.innerHTML = "";
 
@@ -927,4 +927,4 @@ async function showFirebasePhotos() {
   });
 }
 
-showFirebasePhotos();
+showFirebaseschool();
