@@ -896,35 +896,3 @@ deleteBtn.addEventListener(
 
 
  
-import {
-  collection,
-  getDocs
-} from "firebase/firestore";
-
-async function showFirebasePhotos() {
-  const gallery = document.getElementById("school");
-
-  const photosRef = collection(
-    db,
-    "users",
-    auth.currentUser.uid,
-    "school"
-  );
-
-  const snapshot = await getDocs(schoolRef);
-
-  gallery.innerHTML = "";
-
-  snapshot.forEach((doc) => {
-    const photo = doc.data();
-
-    const img = document.createElement("img");
-    img.src = photo.data;
-    img.style.width = "200px";
-    img.style.margin = "10px";
-
-    gallery.appendChild(img);
-  });
-}
-
-showFirebaseschool();
