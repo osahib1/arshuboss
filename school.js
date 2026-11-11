@@ -892,3 +892,39 @@ deleteBtn.addEventListener(
 
     }
 );
+
+
+
+ 
+import {
+  collection,
+  getDocs
+} from "firebase/firestore";
+
+async function showFirebasePhotos() {
+  const gallery = document.getElementById("gallery");
+
+  const photosRef = collection(
+    db,
+    "users",
+    auth.currentUser.uid,
+    "photos"
+  );
+
+  const snapshot = await getDocs(photosRef);
+
+  gallery.innerHTML = "";
+
+  snapshot.forEach((doc) => {
+    const photo = doc.data();
+
+    const img = document.createElement("img");
+    img.src = photo.data;
+    img.style.width = "200px";
+    img.style.margin = "10px";
+
+    gallery.appendChild(img);
+  });
+}
+
+showFirebasePhotos();
