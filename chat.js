@@ -3,15 +3,26 @@ import {
   initializeApp, getApps, getApp
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 
+
 import {
   getAuth, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 
 import {
-  getFirestore, doc, getDoc, setDoc,
-  collection, query, where, getDocs,
-  addDoc, orderBy, onSnapshot, serverTimestamp,
-  runTransaction
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+  addDoc,
+  orderBy,
+  onSnapshot,
+  serverTimestamp,
+  runTransaction,
+  increment
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
 import {
