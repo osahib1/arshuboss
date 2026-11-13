@@ -3,7 +3,6 @@ import {
   initializeApp, getApps, getApp
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 
-
 import {
   getAuth, onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
@@ -385,7 +384,6 @@ function startRecentChats() {
         recentChatData.map(chat => chat.id)
       );
 
-      // Stop listeners for chats no longer in the list
       for (const [chatId, unsubscribe] of recentSettingsStops) {
         if (!currentIds.has(chatId)) {
           unsubscribe();
@@ -394,7 +392,6 @@ function startRecentChats() {
         }
       }
 
-      // Listen to this user's unread count in every chat
       recentChatData.forEach(chat => {
         listenToRecentSettings(chat.id);
       });
@@ -708,10 +705,8 @@ async function openChat(other) {
       });
     }
 
-    // Reset unread count when this user opens the chat
     await markChatRead(chatId);
 
-    // Own settings
     const settingsRef = doc(
       db, "chats", chatId,
       "userSettings", me.uid
@@ -729,7 +724,6 @@ async function openChat(other) {
       error => setStatus("Settings error: " + error.message)
     );
 
-    // Hidden messages
     const hiddenRef = collection(
       db, "chats", chatId,
       "userSettings", me.uid, "hiddenMessages"
@@ -744,7 +738,6 @@ async function openChat(other) {
       error => setStatus("Hidden messages error: " + error.message)
     );
 
-    // Messages
     const messagesQuery = query(
       collection(db, "chats", chatId, "messages"),
       orderBy("createdAt", "asc")
@@ -760,7 +753,6 @@ async function openChat(other) {
 
         renderMessages();
 
-        // If chat is open, incoming messages are immediately read
         if (activeChat === chatId) {
           const hasIncoming = snap.docs.some(
             d => d.data().senderUid !== me.uid
@@ -1118,8 +1110,10 @@ async function sendChatMessage(messageData, previewText) {
   const recipientUid = activeOther.uid;
 
   const chatRef = doc(db, "chats", chatId);
+
   const recipientSettingsRef = doc(
-    db, "chats", chatId,
+    db,
+    "chats", chatId,
     "userSettings", recipientUid
   );
 
@@ -1127,21 +1121,12 @@ async function sendChatMessage(messageData, previewText) {
     collection(db, "chats", chatId, "messages")
   );
 
-  await runTransaction(db, async transaction => {
-    // Read first, then write
+  await runTransaction(db, async (transaction) => {
     const chatSnap = await transaction.get(chatRef);
-    const recipientSettingsSnap =
-      await transaction.get(recipientSettingsRef);
 
     if (!chatSnap.exists()) {
       throw new Error("Chat document nahi mila. Chat dobara open karo.");
     }
-
-    const oldUnread = recipientSettingsSnap.exists()
-      ? Number(recipientSettingsSnap.data().unreadCount || 0)
-      : 0;
-
-    const newUnread = oldUnread + 1;
 
     transaction.set(messageRef, {
       ...messageData,
@@ -1158,7 +1143,7 @@ async function sendChatMessage(messageData, previewText) {
     transaction.set(
       recipientSettingsRef,
       {
-        unreadCount: newUnread,
+        unreadCount: increment(1),
         updatedAt: serverTimestamp()
       },
       { merge: true }
