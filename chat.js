@@ -455,6 +455,12 @@ onAuthStateChanged(auth, user => {
   if (!user) {
     if (stopMyConnection) stopMyConnection();
     if (stopRecent) stopRecent();
+
+    for (const unsubscribe of recentSettingsStops.values()) {
+      unsubscribe();
+    }
+
+    recentSettingsStops.clear();
     location.href = "index.html";
     return;
   }
@@ -905,9 +911,6 @@ async function clearAllForMe() {
 }
 
 // SEND MESSAGE
-// Message, latest chat preview and recipient unread count are
-// written separately so permission errors can be identified clearly.
-
 async function sendChatMessage(messageData, previewText) {
   if (!activeChat || !activeOther || !me) {
     throw new Error("Pehle user select karo.");
@@ -916,6 +919,10 @@ async function sendChatMessage(messageData, previewText) {
   const chatId = activeChat;
   const senderUid = me.uid;
   const recipientUid = activeOther.uid;
+
+  if (senderUid === recipientUid) {
+    throw new Error("Khud ko message nahi bhej sakte.");
+  }
 
   const chatRef = doc(db, "chats", chatId);
 
@@ -968,6 +975,8 @@ async function sendChatMessage(messageData, previewText) {
 
     stage = "Receiver unread count update";
 
+    // Receiver ki private settings ko READ nahi kar rahe.
+    // Sirf unreadCount ko 1 se increment kar rahe hain.
     await setDoc(
       recipientSettingsRef,
       {
@@ -985,87 +994,6 @@ async function sendChatMessage(messageData, previewText) {
     throw new Error(
       stage + " failed: " + error.message
     );
-  }
-}
-
-
-  const chatId = activeChat;
-  const senderUid = me.uid;
-  const recipientUid = activeOther.uid;
-
-  if (senderUid === recipientUid) {
-    throw new Error("Khud ko message nahi bhej sakte.");
-  }
-
-  const participants = [senderUid, recipientUid].sort();
-  const chatRef = doc(db, "chats", chatId);
-
-  const chatSnap = await getDoc(chatRef);
-
-  if (!chatSnap.exists()) {
-    throw new Error("Chat nahi mili. Chat dobara open karo.");
-  }
-
-  const chatData = chatSnap.data();
-
-  if (
-    !Array.isArray(chatData.participants) ||
-    chatData.participants.length !== 2 ||
-    !participants.every(uid => chatData.participants.includes(uid))
-  ) {
-    throw new Error("Chat participants match nahi kar rahe.");
-  }
-
-  // STEP 1: Save message
-  try {
-    const messageRef = doc(collection(db, "chats", chatId, "messages"));
-
-    await setDoc(messageRef, {
-      ...messageData,
-      senderUid,
-      createdAt: serverTimestamp()
-    });
-  } catch (error) {
-    throw new Error("Message save failed: " + error.message);
-  }
-
-  // STEP 2: Update latest message preview
-  try {
-    await setDoc(
-      chatRef,
-      {
-        lastMessage: previewText,
-        lastSenderUid: senderUid,
-        updatedAt: serverTimestamp()
-      },
-      { merge: true }
-    );
-  } catch (error) {
-    throw new Error("Chat preview update failed: " + error.message);
-  }
-
-  // STEP 3: Increment receiver unread count
-  try {
-    const recipientSettingsRef = doc(
-      db, "chats", chatId, "userSettings", recipientUid
-    );
-
-    const settingsSnap = await getDoc(recipientSettingsRef);
-
-    const oldCount = settingsSnap.exists()
-      ? Number(settingsSnap.data().unreadCount || 0)
-      : 0;
-
-    await setDoc(
-      recipientSettingsRef,
-      {
-        unreadCount: oldCount + 1,
-        updatedAt: serverTimestamp()
-      },
-      { merge: true }
-    );
-  } catch (error) {
-    throw new Error("Unread count update failed: " + error.message);
   }
 }
 
