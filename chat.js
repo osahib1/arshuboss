@@ -907,10 +907,87 @@ async function clearAllForMe() {
 // SEND MESSAGE
 // Message, latest chat preview and recipient unread count are
 // written separately so permission errors can be identified clearly.
+
 async function sendChatMessage(messageData, previewText) {
   if (!activeChat || !activeOther || !me) {
     throw new Error("Pehle user select karo.");
   }
+
+  const chatId = activeChat;
+  const senderUid = me.uid;
+  const recipientUid = activeOther.uid;
+
+  const chatRef = doc(db, "chats", chatId);
+
+  const recipientSettingsRef = doc(
+    db, "chats", chatId, "userSettings", recipientUid
+  );
+
+  let stage = "Chat document read";
+
+  try {
+    const chatSnap = await getDoc(chatRef);
+
+    if (!chatSnap.exists()) {
+      throw new Error("Chat document nahi mila.");
+    }
+
+    const participants = chatSnap.data().participants || [];
+
+    if (
+      participants.length !== 2 ||
+      !participants.includes(senderUid) ||
+      !participants.includes(recipientUid)
+    ) {
+      throw new Error("Chat participants match nahi kar rahe.");
+    }
+
+    stage = "Message save";
+
+    const messageRef = doc(
+      collection(db, "chats", chatId, "messages")
+    );
+
+    await setDoc(messageRef, {
+      ...messageData,
+      senderUid,
+      createdAt: serverTimestamp()
+    });
+
+    stage = "Latest message update";
+
+    await setDoc(
+      chatRef,
+      {
+        lastMessage: previewText,
+        lastSenderUid: senderUid,
+        updatedAt: serverTimestamp()
+      },
+      { merge: true }
+    );
+
+    stage = "Receiver unread count update";
+
+    await setDoc(
+      recipientSettingsRef,
+      {
+        unreadCount: increment(1),
+        updatedAt: serverTimestamp()
+      },
+      { merge: true }
+    );
+
+    return true;
+
+  } catch (error) {
+    console.error("FAILED STAGE:", stage, error);
+
+    throw new Error(
+      stage + " failed: " + error.message
+    );
+  }
+}
+
 
   const chatId = activeChat;
   const senderUid = me.uid;
