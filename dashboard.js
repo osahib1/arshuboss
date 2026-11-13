@@ -1,12 +1,12 @@
-// document.getElementById("logout").addEventListener("click", function () {
+// // document.getElementById("logout").addEventListener("click", function () {
 
-//     let check = confirm("jaldi yes karo");
+// //     let check = confirm("jaldi yes karo");
 
-//     if (check) {
-//         window.location.href = "index.html";
-//     }
+// //     if (check) {
+// //         window.location.href = "index.html";
+// //     }
 
-// });
+// // });
 
 
 // import { initializeApp, getApps, getApp } from
@@ -37,7 +37,7 @@
 // };
 
 
-// Firebase app already hai to wahi use karega
+// // Firebase app already hai to wahi use karega
 // const app = getApps().length
 //     ? getApp()
 //     : initializeApp(firebaseConfig);
@@ -45,9 +45,9 @@
 // const auth = getAuth(app);
 
 
-// ==============================
-// LOGOUT
-// ==============================
+// // ==============================
+// // LOGOUT
+// // ==============================
 
 // document.getElementById("logout").addEventListener(
 //     "click",
@@ -64,14 +64,14 @@
 
 //         try {
 
-            // Firebase se completely logout
-            // await signOut(auth);
+//             // Firebase se completely logout
+//             await signOut(auth);
 
-            // // 24 hour login timer delete
-            // localStorage.removeItem("loginTime");
+//             // 24 hour login timer delete
+//             localStorage.removeItem("loginTime");
 
-            // // Login page
-            // window.location.replace("index.html");
+//             // Login page
+//             window.location.replace("index.html");
 
 //         }
 
@@ -88,6 +88,30 @@
 //     }
 // );
 
+
+
+
+// import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+// import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+
+// onAuthStateChanged(auth, async (user) => {
+//   if (!user) return;
+
+//   try {
+//     const snap = await getDoc(doc(db, "profiles", user.uid));
+
+//     if (snap.exists()) {
+//       const data = snap.data();
+
+//       if (data.photoBase64) {
+//         document.getElementById("dashboardDP").src =
+//           data.photoBase64;
+//       }
+//     }
+//   } catch (error) {
+//     console.error("DP load error:", error);
+//   }
+// });
 
 
 
@@ -180,4 +204,3 @@ document.getElementById("logout").addEventListener(
         }
     }
 );
-
