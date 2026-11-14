@@ -463,6 +463,29 @@ body {
   }
 }
 
+  
+#mobileBack {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+  line-height: 1;
+  border: none;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+}
+
+@media (max-width: 650px) {
+  body.chat-open #mobileBack {
+    display: flex;
+    flex-shrink: 0;
+  }
+}
+
 </style>
 </head>
 
