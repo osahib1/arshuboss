@@ -381,6 +381,88 @@ body {
   #messages { padding: 12px; }
   .msg { max-width: 88%; }
 }
+
+  
+/* MOBILE HEIGHT FIX */
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.chat-app {
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+}
+
+.chat-main {
+  min-height: 0;
+}
+
+#messages {
+  min-height: 0;
+}
+
+@media (max-width: 650px) {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .chat-app {
+    height: 100vh;
+    height: 100dvh;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  body.chat-open .chat-main {
+    height: 100%;
+    min-height: 0;
+    flex: 1;
+  }
+
+  .chat-header {
+    flex-shrink: 0;
+    min-height: 65px;
+  }
+
+  #messages {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .input-area {
+    flex-shrink: 0;
+    padding: 8px;
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+
+  #messageInput {
+    height: 45px;
+  }
+
+  #send {
+    width: 45px;
+    height: 45px;
+  }
+
+  #photoBtn {
+    width: 38px;
+    height: 45px;
+  }
+
+  #status {
+    flex-shrink: 0;
+  }
+}
+
 </style>
 </head>
 
