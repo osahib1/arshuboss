@@ -170,26 +170,73 @@ a {
 
 #welcomeContent {
     position: relative;
-
     width: 100%;
     max-width: 100%;
-
     margin: 0;
     padding: 0 12px;
 
     background: transparent;
-
-    border: none;
-    border-radius: 0;
-
-    box-shadow: none;
-
     text-align: center;
     color: white;
+}
 
+/* Welcome zoom animation */
+#welcomeScreen.show #welcomeContent {
     animation: welcomeZoom 0.8s ease both;
 }
 
+#welcomeScreen.show #welcomeLock {
+    animation: lockPop 0.8s ease both;
+}
+
+#welcomeScreen.show #welcomeTitle {
+    animation: textUp 0.8s ease both;
+}
+
+#welcomeScreen.show #welcomeName {
+    animation: textUp 1s ease both;
+}
+
+@keyframes welcomeZoom {
+    0% {
+        transform: scale(0.4);
+        opacity: 0;
+    }
+    60% {
+        transform: scale(1.15);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes lockPop {
+    0% {
+        transform: scale(0.3) rotate(-20deg);
+        opacity: 0;
+    }
+    60% {
+        transform: scale(1.2) rotate(5deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1) rotate(0);
+        opacity: 1;
+    }
+}
+
+@keyframes textUp {
+    from {
+        transform: translateY(25px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
 
 /* LOCK ICON */
 
