@@ -560,44 +560,50 @@ a {
 ========================= -->
 
 <script>
+(function () {
 
-const welcomeScreen = document.getElementById("welcomeScreen");
+    const welcomeScreen = document.getElementById("welcomeScreen");
 
-if (sessionStorage.getItem("justLoggedIn") === "yes") {
+    const justLoggedIn = localStorage.getItem("justLoggedIn");
 
-    // Login flag remove
-    sessionStorage.removeItem("justLoggedIn");
+    console.log("Welcome flag:", justLoggedIn);
 
-    // Welcome screen show
-    welcomeScreen.style.display = "flex";
+    if (justLoggedIn === "yes") {
 
-    // Animation start
-    requestAnimationFrame(function () {
+        // Flag ko ek baar use karke remove karo
+        localStorage.removeItem("justLoggedIn");
 
-        welcomeScreen.classList.add("show");
+        // Welcome screen show karo
+        welcomeScreen.style.display = "flex";
 
-    });
+        // Browser ko pehle screen render karne do
+        welcomeScreen.getBoundingClientRect();
 
-    // 3 seconds baad fade out
-    setTimeout(function () {
+        // Animation start
+        requestAnimationFrame(function () {
 
-        welcomeScreen.classList.remove("show");
+            welcomeScreen.classList.add("show");
 
-        welcomeScreen.classList.add("hide");
+        });
 
-        // Fade animation complete hone ke baad hide
+        // 3 seconds baad fade out
         setTimeout(function () {
 
-            welcomeScreen.style.display = "none";
+            welcomeScreen.classList.remove("show");
+            welcomeScreen.classList.add("hide");
 
-            welcomeScreen.classList.remove("hide");
+            setTimeout(function () {
 
-        }, 600);
+                welcomeScreen.style.display = "none";
+                welcomeScreen.classList.remove("hide");
 
-    }, 3000);
+            }, 600);
 
-}
+        }, 3000);
 
+    }
+
+})();
 </script>
 
 
