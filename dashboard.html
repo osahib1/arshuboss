@@ -393,19 +393,29 @@ div:hover {
    ANIMATIONS
 ================================ */
 
-@keyframes welcomeZoom {
 
-    from {
-        transform: scale(0.6);
-        opacity: 0;
-    }
+#welcomeContent {
+    position: absolute !important;
 
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
+    top: 50% !important;
+    left: 50% !important;
 
+    translate: -50% -50%;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 !important;
+    padding: 0 10px !important;
+
+    background: transparent !important;
+    text-align: center !important;
+
+    color: white !important;
+
+    animation: welcomeZoom 0.8s ease;
 }
+
 
 
 @keyframes lockPop {
