@@ -1,22 +1,112 @@
-// // document.getElementById("logout").addEventListener("click", function () {
+// import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 
-// //     let check = confirm("Kya aap logout karna chahte hain?");
+// import {
+//   getAuth,
+//   signInWithEmailAndPassword
+// } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 
-// //     if (check) {
-// //         window.location.href = "index.html";
-// //     }
+// const firebaseConfig = {
+//   apiKey: "YOUR_API_KEY",
+//   authDomain: "arshu-9919.firebaseapp.com",
+//   projectId: "arshu-9919",
+//   storageBucket: "arshu-9919.firebasestorage.app",
+//   messagingSenderId: "629782428750",
+//   appId: "YOUR_APP_ID"
+// };
 
-// // });
+// const app = initializeApp(firebaseConfig);
+// const auth = getAuth(app);
+
+// // const btn = document.getElementById("loginBtn");
+
+// btn.addEventListener("click", () => {
+
+//     const email = document.getElementById("email").value;
+
+//     const password = document.getElementById("password").value;
+
+//     signInWithEmailAndPassword(auth,email,password)
+
+//     .then(() => {
+
+//         window.location.href="dashboard.html";
+
+//     })
+
+//     .catch((error)=>{
+
+//         alert(error.message);
+
+//     });
+
+// });
+//    console.log("login.js loaded");
+
+// import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+
+// import {
+//   getAuth,
+//   signInWithEmailAndPassword
+// } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+
+// // Firebase Config
+// const firebaseConfig = {
+//   apiKey: "AIzaSyDpdRnhuWp57slwtpIdRwS9W3pqpITr66s",
+//   authDomain: "arshu-9919.firebaseapp.com",
+//   projectId: "arshu-9919",
+//   storageBucket: "arshu-9919.firebasestorage.app",
+//   messagingSenderId: "629782428750",
+//   appId: "1:629782428750:web:4db3c0d9d68f89c75f971f"
+// };
+
+// // Initialize Firebase
+// const app = initializeApp(firebaseConfig);
+// const auth = getAuth(app);
+
+// // Login Button
+// const btn = document.getElementById("loginBtn");
+
+// btn.addEventListener("click", () => {
+
+//     const email = document.getElementById("email").value;
+//     const password = document.getElementById("password").value;
+
+//     signInWithEmailAndPassword(auth, email, password)
+//         .then((userCredential) => {
+
+//             alert("Login Successful");
+
+//             window.location.href = "dashboard.html";
+
+//         })
+//         .catch((error) => {
+
+//             alert(error.message);
+
+//         });
+
+// });
+
+// btn.addEventListener("click", () => {
+
+//     console.log("Button Clicked");
+
+//     const email = document.getElementById("email").value;
+//     const password = document.getElementById("password").value;
+
+//     console.log(email);
+//     console.log(password);
+
+// });
 
 
-// import { initializeApp, getApps, getApp } from
-// "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+
+// import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 
 // import {
 //     getAuth,
-//     signOut
-// } from
-// "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+//     signInWithEmailAndPassword
+// } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 
 
 // const firebaseConfig = {
@@ -34,178 +124,166 @@
 //     appId: "1:629782428750:web:4db3c0d9d68f89c75f971f",
 
 //     measurementId: "G-29KEM972QS"
+
 // };
 
 
-// // Firebase app already hai to wahi use karega
-// const app = getApps().length
-//     ? getApp()
-//     : initializeApp(firebaseConfig);
+// const app = initializeApp(firebaseConfig);
 
 // const auth = getAuth(app);
 
 
-// // ==============================
-// // LOGOUT
-// // ==============================
-
-// document.getElementById("logout").addEventListener(
-//     "click",
-//     async function () {
-
-//         let check = confirm(
-//             "Kya aap logout karna chahte ho?"
-//         );
-
-//         if (!check) {
-//             return;
-//         }
+// const loginBtn =
+//     document.getElementById("loginBtn");
 
 
-//         try {
+// loginBtn.addEventListener("click", function () {
 
-//             // Firebase se completely logout
-//             await signOut(auth);
+//     const email =
+//         document.getElementById("email").value.trim();
 
-//             // 24 hour login timer delete
-//             localStorage.removeItem("loginTime");
+//     const password =
+//         document.getElementById("password").value;
 
-//             // Login page
-//             window.location.replace("index.html");
 
-//         }
+//     if (email === "" || password === "") {
 
-//         catch (error) {
- 
-//             console.error(error);
+//         alert("Email aur Password bharo.");
 
-//             alert(
-//                 "Logout nahi hua. Dobara try karo."
-//             );
-
-//         }
+//         return;
 
 //     }
-// );
 
 
-// import {
-//     getFirestore,
-//     doc,
-//     getDoc
-// } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+//     signInWithEmailAndPassword(
+//         auth,
+//         email,
+//         password
+//     )
 
-// import {
-//     getAuth,
-//     onAuthStateChanged
-// } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+//     .then(function () {
 
-// const db = getFirestore();
-// const auth = getAuth();
+//         window.location.href = "dashboard.html";
 
-// onAuthStateChanged(auth, async (user) => {
-//     if (!user) return;
+//     })
 
-//     const snap = await getDoc(doc(db, "profiles", user.uid));
+//     .catch(function (error) {
 
-//     if (snap.exists()) {
-//         const data = snap.data();
+//         console.log(error);
 
-//         document.getElementById("notesDP").src =
-//             data.photoBase64 ||
-//             "https://placehold.co/80x80/222/fff?text=DP";
-//     }
+//         alert("Wrong Email or Password");
+
+//     });
+
 // });
 
 
 
-
-import { initializeApp, getApps, getApp } from
+import { initializeApp } from
 "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 
 import {
     getAuth,
-    signOut,
-    onAuthStateChanged
+    signInWithEmailAndPassword
 } from
 "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 
-import {
-    getFirestore,
-    doc,
-    getDoc
-} from
-"https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
 const firebaseConfig = {
+
     apiKey: "AIzaSyDpdRnhuWp57slwtpIdRwS9W3pqpITr66s",
+
     authDomain: "arshu-9919.firebaseapp.com",
+
     projectId: "arshu-9919",
+
     storageBucket: "arshu-9919.firebasestorage.app",
+
     messagingSenderId: "629782428750",
+
     appId: "1:629782428750:web:4db3c0d9d68f89c75f971f",
+
     measurementId: "G-29KEM972QS"
 };
 
-// Firebase initialize
-const app = getApps().length
-    ? getApp()
-    : initializeApp(firebaseConfig);
+
+const app = initializeApp(firebaseConfig);
 
 const auth = getAuth(app);
-const db = getFirestore(app);
 
-// ==============================
-// NOTES DP LOAD
-// ==============================
 
-const notesDP = document.getElementById("notesDP");
+const loginBtn =
+    document.getElementById("loginBtn");
 
-onAuthStateChanged(auth, async (user) => {
-    if (!user) return;
 
-    try {
-        const snap = await getDoc(
-            doc(db, "profiles", user.uid)
-        );
-
-        if (snap.exists()) {
-            const data = snap.data();
-
-            if (notesDP) {
-                notesDP.src = data.photoBase64 ||
-                    "https://placehold.co/80x80/222/fff?text=DP";
-            }
-        }
-    } catch (error) {
-        console.error("Notes DP error:", error);
-    }
-});
-
-// ==============================
-// LOGOUT
-// ==============================
-
-document.getElementById("logout").addEventListener(
+loginBtn.addEventListener(
     "click",
-    async function () {
+    function () {
 
-        const check = confirm(
-            "Kya aap logout karna chahte ho?"
-        );
+        const email =
+            document.getElementById("email")
+                .value
+                .trim();
 
-        if (!check) return;
+        const password =
+            document.getElementById("password")
+                .value;
 
-        try {
-            await signOut(auth);
 
-            localStorage.removeItem("loginTime");
+        if (
+            email === "" ||
+            password === ""
+        ) {
 
-            window.location.replace("index.html");
+            alert(
+                "Email aur Password bharo."
+            );
 
-        } catch (error) {
-            console.error(error);
-            alert("Logout nahi hua. Dobara try karo.");
+            return;
         }
+
+
+        signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+        )
+
+        .then(function () {
+
+            // =========================
+            // START 24 HOUR SESSION
+            // =========================
+
+            localStorage.setItem(
+                "loginTime",
+                Date.now().toString()
+            );
+         sessionStorage.setItem(
+    "justLoggedIn",
+    "yes"
+);
+        // localStorage.setItem("justLoggedIn", "yes");
+      
+            // =========================
+            // OPEN DASHBOARD
+            // =========================
+
+            window.location.replace(
+                "dashboard.html"
+            );
+
+        })
+
+        .catch(function (error) {
+
+            console.log(error);
+
+            alert(
+                "Wrong Email or Password"
+            );
+
+        });
+
     }
 );
