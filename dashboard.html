@@ -591,9 +591,26 @@ a {
      WELCOME SCRIPT
 ========================= -->
 
-<script>
 
+<script>
 const welcomeScreen = document.getElementById("welcomeScreen");
+
+if (sessionStorage.getItem("justLoggedIn") === "yes") {
+
+    sessionStorage.removeItem("justLoggedIn");
+
+    welcomeScreen.style.display = "flex";
+
+    requestAnimationFrame(() => {
+        welcomeScreen.classList.add("show");
+    });
+
+    setTimeout(function () {
+        welcomeScreen.classList.remove("show");
+        welcomeScreen.style.display = "none";
+    }, 3000);
+}
+</script>
 
 if (sessionStorage.getItem("justLoggedIn") === "yes") {
 
