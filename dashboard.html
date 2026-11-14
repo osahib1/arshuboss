@@ -560,52 +560,25 @@ a {
 ========================= -->
 
 <script>
-(function () {
+const welcomeScreen = document.getElementById("welcomeScreen");
 
-    const welcomeScreen = document.getElementById("welcomeScreen");
+// TEST: Login flag check kiye bina Welcome show karo
+welcomeScreen.style.display = "flex";
 
-    const justLoggedIn = localStorage.getItem("justLoggedIn");
+requestAnimationFrame(() => {
+    welcomeScreen.classList.add("show");
+});
 
-    console.log("Welcome flag:", justLoggedIn);
+setTimeout(() => {
+    welcomeScreen.classList.remove("show");
+    welcomeScreen.classList.add("hide");
 
-    if (justLoggedIn === "yes") {
-
-        // Flag ko ek baar use karke remove karo
-        localStorage.removeItem("justLoggedIn");
-
-        // Welcome screen show karo
-        welcomeScreen.style.display = "flex";
-
-        // Browser ko pehle screen render karne do
-        welcomeScreen.getBoundingClientRect();
-
-        // Animation start
-        requestAnimationFrame(function () {
-
-            welcomeScreen.classList.add("show");
-
-        });
-
-        // 3 seconds baad fade out
-        setTimeout(function () {
-
-            welcomeScreen.classList.remove("show");
-            welcomeScreen.classList.add("hide");
-
-            setTimeout(function () {
-
-                welcomeScreen.style.display = "none";
-                welcomeScreen.classList.remove("hide");
-
-            }, 600);
-
-        }, 3000);
-
-    }
-
-})();
+    setTimeout(() => {
+        welcomeScreen.style.display = "none";
+        welcomeScreen.classList.remove("hide");
+    }, 600);
+}, 3000);
 </script>
-
 
 <!-- =========================
      LOGOUT
