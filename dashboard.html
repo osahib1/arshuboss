@@ -1,13 +1,14 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Dashboard</title>
-<!-- <link rel="stylesheet" href="note.html"> -->
-    <link rel="stylesheet" href="photo.html">
+
 <style>
+
 /* =========================
    RESET
 ========================= */
@@ -21,11 +22,10 @@
 
 
 /* =========================
-   BODY / BACKGROUND
+   BODY
 ========================= */
 
 body {
-    margin: 0;
     min-height: 100vh;
     width: 100%;
 
@@ -38,59 +38,46 @@ body {
     background-attachment: fixed;
 
     color: white;
-
-
 }
 
 
 /* =========================
-   HEADING
+   FOLDER CARDS
 ========================= */
 
-h1 {
-    text-align: center;
-    margin-top: 10px;
-    font-size: 28px;
-}
+.folder-card {
+    display: inline-block;
 
-
-/* =========================
-   FOLDERS
-========================= */
-
-div {
-  display: inline-block;
     width: 218px;
     padding: 19px;
     margin: 16px;
+
     background: #1e2343;
     border-radius: 32px;
+
     text-align: center;
     font-size: 24px;
     color: white;
+
+    transition: 0.2s;
+}
+
+.folder-card:hover {
+    transform: scale(1.03);
+    background-color: rgb(79, 76, 69);
 }
 
 
-/* =========================
-   FOLDER LINK
-========================= */
+/* FOLDER LINKS */
 
 a {
     text-decoration: none;
     color: white;
 }
 
-
-/* =========================
-   HOVER
-========================= */
-
-div:hover {
-    transform: scale(1.03);
-
-    color: black;
-
-    background-color: rgb(79, 76, 69);
+.folder {
+    display: block;
+    width: 100%;
 }
 
 
@@ -105,18 +92,16 @@ div:hover {
     bottom: 30px;
 
     background: red;
-
     color: white;
 
     border: none;
-
     padding: 11px 17px;
 
     border-radius: 8px;
-
     cursor: pointer;
-}
 
+    z-index: 9999;
+}
 
 #logout:hover {
     background: darkred;
@@ -124,173 +109,38 @@ div:hover {
 
 
 /* =========================
-   MOBILE
+   PROFILE DP
 ========================= */
 
-@media (max-width: 600px) {
+.profile-icon {
+    position: fixed;
 
-    body {
-        min-height: 100vh;
+    top: 18px;
+    right: 20px;
 
-        padding: 15px 10px 90px 10px;
+    width: 42px;
+    height: 42px;
 
-        background-size: cover;
-        background-position: center center;
+    border-radius: 50%;
+    overflow: hidden;
 
-        text-align: center;
-    }
+    border: 2px solid #673ab7;
 
-
-    h1 {
-        font-size: 24px;
-
-        margin: 10px 0 25px 0;
-    }
-
-
-    div {
-        display: block;
-
-        width: 85%;
-
-        max-width: 350px;
-
-        margin: 18px auto;
-
-        padding: 18px 15px;
-
-        font-size: 22px;
-
-        border-radius: 50px;
-    }
-
-
-    div a {
-        display: block;
-
-        width: 100%;
-    }
-
-
-    #logout {
-        position: fixed;
-
-        left: 15px;
-        bottom: 15px;
-
-        right: auto;
-        top: auto;
-
-        padding: 12px 20px;
-
-        z-index: 9999;
-    }
+    z-index: 9999;
 }
-@media screen and (max-width: 600px) {
 
-    body {
-        margin: 0 !important;
-        padding: 20px 15px 100px !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
-        overflow-x: hidden !important;
-        text-align: center !important;
-    }
+.profile-icon img {
+    width: 100%;
+    height: 100%;
 
-    h1 {
-        font-size: 24px !important;
-        margin: 10px 0 30px !important;
-        text-align: center !important;
-    }
-
-    /* HAR FOLDER KO EK ALAG LINE */
-    body > div {
-        display: block !important;
-
-        width: 90% !important;
-        max-width: 400px !important;
-
-        margin: 20px auto !important;
-        padding: 0 !important;
-
-        box-sizing: border-box !important;
-
-        background: transparent !important;
-    }
-
-    /* FOLDER BUTTON */
-    body > div > a.folder {
-        display: block !important;
-
-        width: 100% !important;
-
-        box-sizing: border-box !important;
-
-        padding: 20px 15px !important;
-
-        margin: 0 !important;
-
-        background: #222 !important;
-
-        border-radius: 50px !important;
-
-        text-align: center !important;
-
-        font-size: 24px !important;
-
-        color: white !important;
-
-        text-decoration: none !important;
-    }
-
-    /* LOGOUT */
-    #logout {
-        position: fixed !important;
-
-        left: 15px !important;
-        bottom: 15px !important;
-
-        right: auto !important;
-        top: auto !important;
-
-        margin: 0 !important;
-
-        z-index: 99999 !important;
-    }
+    object-fit: cover;
+    display: block;
 }
 
 
-#welcomeScreen {
-    position: fixed !important;
-
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-
-    width: 100vw !important;
-    height: 100vh !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-
-    background: #000 !important;
-
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    z-index: 999999 !important;
-
-    border: none !important;
-    border-radius: 0 !important;
-
-    animation: welcomeFadeOut 3s ease forwards;
-}
-
-
-/* Main content */
-
+/* =========================
+   WELCOME SCREEN
+========================= */
 
 #welcomeScreen {
     display: none;
@@ -305,7 +155,7 @@ div:hover {
     margin: 0;
     padding: 0;
 
-    background: black;
+    background: #000;
 
     align-items: center;
     justify-content: center;
@@ -315,108 +165,125 @@ div:hover {
     overflow: hidden;
 }
 
+
+/* WELCOME CONTENT */
+
 #welcomeContent {
-    position: absolute;
-
-    top: 50%;
-    left: 50%;
-
-    transform: translate(-50%, -50%);
+    position: relative;
 
     width: 100%;
     max-width: 100%;
 
     margin: 0;
-    padding: 0 10px;
+    padding: 0 12px;
+
+    background: transparent;
+
+    border: none;
+    border-radius: 0;
+
+    box-shadow: none;
 
     text-align: center;
+    color: white;
+
+    animation: welcomeZoom 0.8s ease both;
 }
 
 
-
-/* Lock */
+/* LOCK ICON */
 
 #welcomeLock {
-    background: transparent !important;
+    display: block;
+
+    width: 100%;
+
+    background: transparent;
 
     font-size: 90px;
 
-    margin: 0 0 20px 0 !important;
-    padding: 0 !important;
+    margin: 0 0 20px;
+    padding: 0;
 
-    border: none !important;
-    border-radius: 0 !important;
+    border: none;
+    border-radius: 0;
 
-    animation: lockPop 0.8s ease;
+    animation: lockPop 0.8s ease both;
 }
 
 
-/* Welcome */
+/* WELCOME TITLE */
 
 #welcomeTitle {
-    background: transparent !important;
+    display: block;
 
-    color: white !important;
+    width: 100%;
 
-    font-size: 52px !important;
-    font-weight: bold !important;
+    background: transparent;
 
-    margin: 0 !important;
-    padding: 0 !important;
+    color: white;
 
-    border: none !important;
+    font-size: 52px;
+    font-weight: bold;
 
-    animation: textUp 0.8s ease;
+    margin: 0;
+    padding: 0;
+
+    border: none;
+
+    animation: textUp 0.8s ease both;
 }
 
 
-/* Arshus Fan */
+/* WELCOME NAME */
 
 #welcomeName {
-    background: transparent !important;
+    display: block;
 
-    color: white !important;
+    width: 100%;
 
-    font-size: 46px !important;
-    font-weight: bold !important;
+    background: transparent;
 
-    margin: 8px 0 0 0 !important;
-    padding: 0 !important;
+    color: white;
 
-    border: none !important;
+    font-size: 46px;
+    font-weight: bold;
 
-    animation: textUp 1s ease;
+    margin: 8px 0 0;
+    padding: 0;
+
+    border: none;
+
+    animation: textUp 1s ease both;
 }
 
 
-/* ==============================
+/* =========================
    ANIMATIONS
-================================ */
+========================= */
 
+/* Welcome zoom */
 
-#welcomeContent {
-    position: absolute !important;
+@keyframes welcomeZoom {
 
-    top: 50% !important;
-    left: 50% !important;
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
 
-    translate: -50% -50%;
+    60% {
+        transform: scale(1.12);
+        opacity: 1;
+    }
 
-    width: 100% !important;
-    max-width: 100% !important;
-
-    margin: 0 !important;
-    padding: 0 10px !important;
-
-    background: transparent !important;
-    text-align: center !important;
-
-    color: white !important;
-
-    animation: welcomeZoom 0.8s ease;
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
 }
 
 
+/* Lock animation */
 
 @keyframes lockPop {
 
@@ -434,9 +301,10 @@ div:hover {
         transform: scale(1) rotate(0);
         opacity: 1;
     }
-
 }
 
+
+/* Text animation */
 
 @keyframes textUp {
 
@@ -449,9 +317,10 @@ div:hover {
         transform: translateY(0);
         opacity: 1;
     }
-
 }
 
+
+/* Welcome fade out */
 
 @keyframes welcomeFadeOut {
 
@@ -469,140 +338,253 @@ div:hover {
         opacity: 0;
         visibility: hidden;
     }
-
 }
 
 
-/* ==============================
-   PHONE
-================================ */
+/* =========================
+   MOBILE RESPONSIVE
+========================= */
 
 @media (max-width: 600px) {
 
+    body {
+        min-height: 100vh;
+        min-height: 100dvh;
+
+        padding: 20px 15px 100px;
+
+        width: 100%;
+
+        overflow-x: hidden;
+
+        text-align: center;
+
+        background-size: cover;
+        background-position: center center;
+    }
+
+
+    /* FOLDERS */
+
+    .folder-card {
+        display: block;
+
+        width: 90%;
+        max-width: 400px;
+
+        margin: 20px auto;
+        padding: 0;
+
+        background: transparent;
+        border-radius: 0;
+    }
+
+    .folder-card:hover {
+        background: transparent;
+        transform: none;
+    }
+
+    .folder-card .folder {
+        display: block;
+
+        width: 100%;
+
+        padding: 20px 15px;
+
+        background: #222;
+
+        border-radius: 50px;
+
+        text-align: center;
+        font-size: 24px;
+
+        color: white;
+    }
+
+
+    /* PROFILE */
+
+    .profile-icon {
+        top: 15px;
+        right: 15px;
+
+        width: 42px;
+        height: 42px;
+    }
+
+
+    /* LOGOUT */
+
+    #logout {
+        position: fixed;
+
+        left: 15px;
+        bottom: 15px;
+
+        right: auto;
+        top: auto;
+
+        margin: 0;
+
+        padding: 12px 20px;
+
+        z-index: 99999;
+    }
+
+
+    /* WELCOME */
+
+    #welcomeScreen {
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+
+        display: none;
+
+        align-items: center;
+        justify-content: center;
+
+        padding: 0;
+    }
+
+
+    #welcomeContent {
+        width: 100%;
+        max-width: 100%;
+
+        padding: 0 10px;
+
+        text-align: center;
+    }
+
+
     #welcomeLock {
         font-size: 70px;
+
+        margin-bottom: 15px;
     }
+
 
     #welcomeTitle {
-        font-size: 38px !important;
+        font-size: clamp(28px, 9vw, 38px);
+        text-align: center;
     }
+
 
     #welcomeName {
-        font-size: 34px !important;
+        font-size: clamp(25px, 8vw, 34px);
+        text-align: center;
     }
 
 }
 
-#welcomeScreen {
-    display: none;
-
-    position: fixed;
-    inset: 0;
-
-    width: 100vw;
-    height: 100vh;
-
-    background: black;
-
-    align-items: center;
-    justify-content: center;
-
-    z-index: 999999;
-}
-
-
-
-.profile-icon{
-  position:fixed;
-  top:18px;
-  right:20px;
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  overflow:hidden;
-  border:2px solid #673ab7;
-  z-index:9999;
-}
-
-.profile-icon img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
-
-    
 </style>
-
-
 </head>
+
 
 <body>
 
 
+<!-- =========================
+     PROFILE
+========================= -->
+
 <a href="profile.html" class="profile-icon">
-  <img id="dashboardDP" src="https://placehold.co/80x80/222/fff?text=DP" alt="Profile">
+
+    <img
+        id="dashboardDP"
+        src="https://placehold.co/80x80/222/fff?text=DP"
+        alt="Profile"
+    >
+
 </a>
 
-<!-- <h1>welcome back don bhai🥳</h1> -->
 
-<div><a class="folder" href="notes.html">📁Notes</a></div>
-<div><a class="folder" href="password.html">📁Passwords</a></div>
-<div><a class="folder" href="Photo.html"> 📁Photos</a></div>
+<!-- =========================
+     FOLDERS
+========================= -->
 
-<div><a class="folder" href="phone.html">📁Phone</a></div>
+<div class="folder-card">
+    <a class="folder" href="notes.html">📁Notes</a>
+</div>
 
-<!-- <div id="welcomeScreen">
-    <div class="welcome-lock">🔓</div>
-    <h1>Welcome Arshus Fan</h1>
-</div> -->
+<div class="folder-card">
+    <a class="folder" href="password.html">📁Passwords</a>
+</div>
+
+<div class="folder-card">
+    <a class="folder" href="Photo.html">📁Photos</a>
+</div>
+
+<div class="folder-card">
+    <a class="folder" href="phone.html">📁Phone</a>
+</div>
+
+
+<!-- =========================
+     WELCOME SCREEN
+========================= -->
 
 <div id="welcomeScreen">
+
     <div id="welcomeContent">
 
         <div id="welcomeLock">👿</div>
 
-        <div id="welcomeTitle">Welcome Jamal </div>
+        <div id="welcomeTitle">Welcome Jamal</div>
 
         <div id="welcomeName"></div>
 
     </div>
+
 </div>
 
+
+<!-- =========================
+     WELCOME SCRIPT
+========================= -->
+
 <script>
+
 const welcomeScreen = document.getElementById("welcomeScreen");
 
 if (sessionStorage.getItem("justLoggedIn") === "yes") {
 
     welcomeScreen.style.display = "flex";
 
+    welcomeScreen.style.animation =
+        "welcomeFadeOut 3s ease forwards";
+
     sessionStorage.removeItem("justLoggedIn");
 
     setTimeout(function () {
+
         welcomeScreen.style.display = "none";
+
+        welcomeScreen.style.animation = "none";
+
     }, 3000);
 
 }
+
 </script>
 
 
-
+<!-- =========================
+     LOGOUT
+========================= -->
 
 <button id="logout">🚪 Logout</button>
-<!-- 
-<script src="dashboard.js"></script> -->
+
+
+<!-- =========================
+     FIREBASE SCRIPTS
+========================= -->
+
 <script type="module" src="dashboard.js"></script>
+
 <script type="module" src="auth-guard.js"></script>
-<!-- 
-  <div class="folder">📁 Passwords</div>
-
-<div class="folder">📁 Photos</div>
 
 
-<div class="folder">📁 Documents</div> -->
-
-
-
-</script>
 </body>
 </html>
