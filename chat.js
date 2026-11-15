@@ -2731,11 +2731,53 @@ async function clearAllForMe() {
 }
 
 // SEND MESSAGE
+
+
+
+async function sendChatPushNotification(chatId, recipientUid) {
+  try {
+    if (!me || !chatId || !recipientUid) return;
+
+    const idToken = await me.getIdToken();
+
+    const response = await fetch(
+      "https://arshu-chat-notifications.kasimlalau772.workers.dev/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${idToken}`
+        },
+        body: JSON.stringify({
+          chatId: chatId,
+          recipientUid: recipientUid
+        })
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      console.error("Push notification error:", result);
+      return;
+    }
+
+    console.log("Push notification result:", result);
+
+  } catch (error) {
+    // Notification fail hone par bhi message send rahega
+    console.error("Push notification failed:", error);
+  }
+}
+
+ 
+
 async function sendChatMessage(messageData, previewText) {
   if (!activeChat || !activeOther || !me) {
     throw new Error("Pehle user select karo.");
   }
 
+  // Current chat aur users ki details save
   const chatId = activeChat;
   const senderUid = me.uid;
   const recipientUid = activeOther.uid;
@@ -2747,12 +2789,17 @@ async function sendChatMessage(messageData, previewText) {
   const chatRef = doc(db, "chats", chatId);
 
   const recipientSettingsRef = doc(
-    db, "chats", chatId, "userSettings", recipientUid
+    db,
+    "chats",
+    chatId,
+    "userSettings",
+    recipientUid
   );
 
   let stage = "Chat document read";
 
   try {
+    // 1. Chat document check
     const chatSnap = await getDoc(chatRef);
 
     if (!chatSnap.exists()) {
@@ -2769,6 +2816,7 @@ async function sendChatMessage(messageData, previewText) {
       throw new Error("Chat participants match nahi kar rahe.");
     }
 
+    // 2. Message save
     stage = "Message save";
 
     const messageRef = doc(
@@ -2781,6 +2829,7 @@ async function sendChatMessage(messageData, previewText) {
       createdAt: serverTimestamp()
     });
 
+    // 3. Latest message update
     stage = "Latest message update";
 
     await setDoc(
@@ -2793,6 +2842,7 @@ async function sendChatMessage(messageData, previewText) {
       { merge: true }
     );
 
+    // 4. Receiver unread count update
     stage = "Receiver unread count update";
 
     await setDoc(
@@ -2804,6 +2854,10 @@ async function sendChatMessage(messageData, previewText) {
       { merge: true }
     );
 
+    // 5. Push notification send
+    // Notification fail hone par message delete nahi hoga
+    await sendChatPushNotification(chatId, recipientUid);
+
     return true;
 
   } catch (error) {
@@ -2814,6 +2868,7 @@ async function sendChatMessage(messageData, previewText) {
     );
   }
 }
+
 
 // SEND TEXT - MOBILE KEYBOARD FIX
 if (send) {
