@@ -1552,7 +1552,21 @@ const token = await getToken(messaging, {
       return;
     }
 
-    console.log("FCM DEVICE TOKEN:", token);
+    if (!me) {
+  alert("Pehle login karo.");
+  return;
+}
+
+await setDoc(
+  doc(db, "users", me.uid, "fcmTokens", token),
+  {
+    token: token,
+    createdAt: serverTimestamp()
+  },
+  { merge: true }
+);
+
+console.log("FCM token saved successfully");
     notificationButton.textContent = "Notifications Enabled";
 
     alert("Notifications permission aur device token ready hai!");
