@@ -1119,6 +1119,60 @@ button {
   white-space: nowrap;
 }
 
+  
+/* MOBILE CHAT FIX */
+
+@media (max-width: 650px) {
+
+  #messages .msg-row {
+    display: flex !important;
+    align-items: flex-end !important;
+  }
+
+  #messages .msg {
+    display: block !important;
+    width: fit-content !important;
+    max-width: 86% !important;
+    position: relative !important;
+    overflow: visible !important;
+  }
+
+  #messages .message-content {
+    display: inline !important;
+    white-space: pre-wrap !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  #messages .message-footer {
+    display: inline-flex !important;
+    float: right !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 4px !important;
+    width: auto !important;
+    margin-top: 5px !important;
+    margin-left: 12px !important;
+    white-space: nowrap !important;
+  }
+
+  #messages .message-time {
+    display: inline-block !important;
+    font-size: 10px !important;
+  }
+
+  #messages .message-ticks {
+    display: inline-block !important;
+    font-size: 11px !important;
+  }
+
+  #messages .reply-quote {
+    display: block !important;
+    width: 100% !important;
+  }
+
+}
+
+
 </style>
 
 
