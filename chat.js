@@ -155,7 +155,7 @@ document.addEventListener("click", e => {
   }
 });
 
-// ONLINE / OFFLINE - EXISTING CODE PRESERVED
+// ONLINE / OFFLINE
 function startMyPresence(uid) {
   if (stopMyConnection) stopMyConnection();
 
@@ -486,32 +486,35 @@ function watchOtherTyping(uid, chatId) {
   );
 }
 
-// WATCH OTHER USER READ STATUS
+// WATCH OTHER USER READ RECEIPT - BLUE TICK
 function watchOtherReadStatus(chatId, otherUid) {
   if (stopOtherRead) stopOtherRead();
 
-  const settingsRef = doc(
+  const receiptRef = doc(
     db,
     "chats",
     chatId,
-    "userSettings",
+    "readReceipts",
     otherUid
   );
 
   stopOtherRead = onSnapshot(
-    settingsRef,
+    receiptRef,
     snap => {
       otherLastReadAt = snap.exists()
         ? snap.data().lastReadAt || null
         : null;
-      renderMessages()
-      ;
+
+      renderMessages();
     },
-    error => console.error("Seen status error:", error)
+    error => {
+      console.error("Seen status error:", error);
+      setStatus("Seen status error: " + error.message);
+    }
   );
 }
 
-// STOP CHAT LISTENERSrenderMessages()
+// STOP CHAT LISTENERS
 function stopListeners() {
   if (stopMessages) stopMessages();
   if (stopSettings) stopSettings();
@@ -539,15 +542,25 @@ async function markChatRead(chatId) {
   if (!me || !chatId) return;
 
   try {
+    // Update only own unread settings
     await setDoc(
       doc(db, "chats", chatId, "userSettings", me.uid),
       {
         unreadCount: 0,
-        lastReadAt: serverTimestamp(),
         updatedAt: serverTimestamp()
       },
       { merge: true }
     );
+
+    // Save read receipt separately
+    await setDoc(
+      doc(db, "chats", chatId, "readReceipts", me.uid),
+      {
+        lastReadAt: serverTimestamp()
+      },
+      { merge: true }
+    );
+
   } catch (error) {
     console.error("Mark read error:", error);
     setStatus("Read status error: " + error.message);
@@ -685,7 +698,6 @@ async function openChat(other) {
     showAvatar($("chatAvatar"), other);
     watchOtherPresence(other.uid);
     watchOtherTyping(other.uid, chatId);
-    watchOtherReadStatus(chatId, other.uid);
 
     messagesBox.innerHTML = "";
     updateSelectionBar();
@@ -715,6 +727,9 @@ async function openChat(other) {
     }
 
     if (activeChat !== chatId) return;
+
+    // Start receipt listener only after chat document exists
+    watchOtherReadStatus(chatId, other.uid);
 
     await markChatRead(chatId);
 
@@ -916,9 +931,8 @@ function cancelReply() {
 if ($("cancelReply")) {
   $("cancelReply").onclick = cancelReply;
 }
- 
+
 // RENDER MESSAGES
- 
 function renderMessages() {
   if (!messagesBox || !me) return;
 
@@ -1100,7 +1114,6 @@ function renderMessages() {
 
   messagesBox.scrollTop = messagesBox.scrollHeight;
 }
-
 
 // HIDE MESSAGES FOR MYSELF
 function cancelSelection() {
