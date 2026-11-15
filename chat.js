@@ -44,7 +44,15 @@ let stopSettings = null;
 let stopHidden = null;
 let stopMyConnection = null;
 let stopOtherPresence = null;
+let stopOtherRead = null;
+let stopOtherTyping = null;
 let stopRecent = null;
+
+let typingTimer = null;
+let typingActive = false;
+
+let otherLastReadAt = null;
+let replyToMessage = null;
 
 let allMessages = [];
 let hiddenIds = new Set();
@@ -147,7 +155,7 @@ document.addEventListener("click", e => {
   }
 });
 
-// ONLINE / OFFLINE
+// ONLINE / OFFLINE - EXISTING CODE PRESERVED
 function startMyPresence(uid) {
   if (stopMyConnection) stopMyConnection();
 
@@ -406,15 +414,124 @@ async function renderRecentChats() {
   });
 }
 
-// STOP CHAT LISTENERS
+// TYPING STATUS
+function stopTyping() {
+  clearTimeout(typingTimer);
+  typingActive = false;
+
+  if (me && activeChat) {
+    set(ref(rtdb, `typing/${activeChat}/${me.uid}`), {
+      isTyping: false
+    }).catch(console.error);
+  }
+}
+
+function handleTyping() {
+  if (!me || !activeChat) return;
+
+  const typingRef = ref(
+    rtdb,
+    `typing/${activeChat}/${me.uid}`
+  );
+
+  if (messageInput.value.trim()) {
+    if (!typingActive) {
+      typingActive = true;
+
+      set(typingRef, {
+        isTyping: true
+      }).catch(console.error);
+
+      onDisconnect(typingRef).set({
+        isTyping: false
+      }).catch(console.error);
+    }
+
+    clearTimeout(typingTimer);
+
+    typingTimer = setTimeout(() => {
+      stopTyping();
+    }, 2000);
+  } else {
+    stopTyping();
+  }
+}
+
+if (messageInput) {
+  messageInput.addEventListener("input", handleTyping);
+}
+
+// WATCH OTHER USER TYPING
+function watchOtherTyping(uid, chatId) {
+  if (stopOtherTyping) stopOtherTyping();
+
+  const typingElement = $("typingIndicator");
+  if (!typingElement) return;
+
+  typingElement.style.display = "none";
+
+  stopOtherTyping = onValue(
+    ref(rtdb, `typing/${chatId}/${uid}`),
+    snapshot => {
+      const data = snapshot.val();
+
+      if (data && data.isTyping === true) {
+        typingElement.textContent = "Typing...";
+        typingElement.style.display = "block";
+      } else {
+        typingElement.style.display = "none";
+      }
+    },
+    error => console.error("Typing error:", error)
+  );
+}
+
+// WATCH OTHER USER READ STATUS
+function watchOtherReadStatus(chatId, otherUid) {
+  if (stopOtherRead) stopOtherRead();
+
+  const settingsRef = doc(
+    db,
+    "chats",
+    chatId,
+    "userSettings",
+    otherUid
+  );
+
+  stopOtherRead = onSnapshot(
+    settingsRef,
+    snap => {
+      otherLastReadAt = snap.exists()
+        ? snap.data().lastReadAt || null
+        : null;
+      renderMessages()
+      ;
+    },
+    error => console.error("Seen status error:", error)
+  );
+}
+
+// STOP CHAT LISTENERSrenderMessages()
 function stopListeners() {
   if (stopMessages) stopMessages();
   if (stopSettings) stopSettings();
   if (stopHidden) stopHidden();
+  if (stopOtherRead) stopOtherRead();
+  if (stopOtherTyping) stopOtherTyping();
 
   stopMessages = null;
   stopSettings = null;
   stopHidden = null;
+  stopOtherRead = null;
+  stopOtherTyping = null;
+
+  stopTyping();
+
+  otherLastReadAt = null;
+
+  if ($("typingIndicator")) {
+    $("typingIndicator").style.display = "none";
+  }
 }
 
 // MARK AS READ
@@ -540,6 +657,12 @@ async function openChat(other) {
 
   try {
     stopListeners();
+
+    if (stopOtherPresence) {
+      stopOtherPresence();
+      stopOtherPresence = null;
+    }
+
     closeMenu();
 
     activeChat = chatId;
@@ -548,8 +671,10 @@ async function openChat(other) {
     allMessages = [];
     hiddenIds = new Set();
     clearedAt = null;
+    otherLastReadAt = null;
     selectedIds.clear();
     selecting = false;
+    cancelReply();
 
     if ($("chatTitle")) {
       $("chatTitle").textContent =
@@ -559,6 +684,8 @@ async function openChat(other) {
 
     showAvatar($("chatAvatar"), other);
     watchOtherPresence(other.uid);
+    watchOtherTyping(other.uid, chatId);
+    watchOtherReadStatus(chatId, other.uid);
 
     messagesBox.innerHTML = "";
     updateSelectionBar();
@@ -704,8 +831,18 @@ function stopLongPress() {
   clearTimeout(pressTimer);
 }
 
+// REPLY MENU
 function showMessageMenu(messageId, x, y) {
   closeMenu();
+
+  const message = allMessages.find(m => m.id === messageId);
+
+  if (message) {
+    menuButton("↩ Reply", () => {
+      closeMenu();
+      startReply(message);
+    });
+  }
 
   menuButton("Select", () => {
     selecting = true;
@@ -732,21 +869,70 @@ function showMessageMenu(messageId, x, y) {
   menu.style.display = "block";
 
   menu.style.left = Math.max(8, Math.min(x, window.innerWidth - 178)) + "px";
-  menu.style.top = Math.max(8, Math.min(y, window.innerHeight - 180)) + "px";
+  menu.style.top = Math.max(8, Math.min(y, window.innerHeight - 220)) + "px";
 }
 
+// START REPLY
+function startReply(message) {
+  replyToMessage = {
+    messageId: message.id,
+    senderUid: message.senderUid,
+    text: message.type === "photo"
+      ? "Photo"
+      : (message.text || "")
+  };
+
+  if ($("replyName")) {
+    $("replyName").textContent =
+      message.senderUid === me.uid
+        ? "You"
+        : (activeOther?.username || "User");
+  }
+
+  if ($("replyText")) {
+    $("replyText").textContent = replyToMessage.text;
+  }
+
+  if ($("replyPreview")) {
+    $("replyPreview").hidden = false;
+  }
+
+  if (messageInput) messageInput.focus();
+}
+
+// CANCEL REPLY
+function cancelReply() {
+  replyToMessage = null;
+
+  if ($("replyPreview")) {
+    $("replyPreview").hidden = true;
+  }
+
+  if ($("replyText")) {
+    $("replyText").textContent = "";
+  }
+}
+
+if ($("cancelReply")) {
+  $("cancelReply").onclick = cancelReply;
+}
+ 
 // RENDER MESSAGES
+ 
 function renderMessages() {
   if (!messagesBox || !me) return;
 
   messagesBox.innerHTML = "";
 
-  const visible = allMessages.filter(m => messageIsVisible(m, m.id));
+  const visible = allMessages.filter(m =>
+    messageIsVisible(m, m.id)
+  );
 
   visible.forEach(m => {
+    const isMine = m.senderUid === me.uid;
+
     const row = document.createElement("div");
-    row.className = "msg-row " +
-      (m.senderUid === me.uid ? "mine" : "theirs");
+    row.className = "msg-row " + (isMine ? "mine" : "theirs");
     row.dataset.messageId = m.id;
 
     if (selecting) {
@@ -766,10 +952,27 @@ function renderMessages() {
     }
 
     const bubble = document.createElement("div");
-    bubble.className = m.senderUid === me.uid
-      ? "msg my-msg"
-      : "msg other-msg";
+    bubble.className = isMine ? "msg my-msg" : "msg other-msg";
 
+    // REPLY QUOTE
+    if (m.replyTo) {
+      const quote = document.createElement("div");
+      quote.className = "reply-quote";
+
+      const quoteName = document.createElement("strong");
+      quoteName.textContent =
+        m.replyTo.senderUid === me.uid
+          ? "You"
+          : (activeOther?.username || "User");
+
+      const quoteText = document.createElement("span");
+      quoteText.textContent = m.replyTo.text || "Message";
+
+      quote.append(quoteName, quoteText);
+      bubble.appendChild(quote);
+    }
+
+    // MESSAGE CONTENT
     if (m.type === "photo" && m.photo) {
       const img = document.createElement("img");
       img.src = m.photo;
@@ -789,10 +992,68 @@ function renderMessages() {
       };
 
       bubble.appendChild(img);
+
+      if (m.text && m.text !== "Photo") {
+        const caption = document.createElement("div");
+        caption.className = "message-content";
+        caption.textContent = m.text;
+        bubble.appendChild(caption);
+      }
     } else {
-      bubble.textContent = m.text || "";
+      const textNode = document.createElement("div");
+      textNode.className = "message-content";
+      textNode.textContent = m.text || "";
+      bubble.appendChild(textNode);
     }
 
+    // BOTTOM TIME + TICKS
+    const footer = document.createElement("div");
+    footer.className = "message-footer";
+
+    if (m.createdAt) {
+      const time = document.createElement("span");
+
+      const date = m.createdAt.toDate
+        ? m.createdAt.toDate()
+        : new Date(m.createdAt);
+
+      time.className = "message-time";
+      time.textContent = date.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+
+      footer.appendChild(time);
+    }
+
+    // SENT / SEEN TICKS
+    if (isMine) {
+      let isSeen = false;
+
+      if (otherLastReadAt && m.createdAt) {
+        const readTime = otherLastReadAt.toMillis
+          ? otherLastReadAt.toMillis()
+          : new Date(otherLastReadAt).getTime();
+
+        const messageTime = m.createdAt.toMillis
+          ? m.createdAt.toMillis()
+          : new Date(m.createdAt).getTime();
+
+        isSeen = readTime >= messageTime;
+      }
+
+      const ticks = document.createElement("span");
+      ticks.className = "message-ticks" + (isSeen ? " seen" : "");
+      ticks.textContent = isSeen ? "✓✓" : "✓";
+
+      footer.appendChild(ticks);
+    }
+
+    if (footer.children.length > 0) {
+      bubble.appendChild(footer);
+    }
+
+    // MESSAGE SELECTION
     row.onclick = e => {
       if (!selecting || e.target.tagName === "INPUT") return;
 
@@ -803,6 +1064,7 @@ function renderMessages() {
       updateSelectionBar();
     };
 
+    // LONG PRESS AND REPLY MENU
     row.style.touchAction = "pan-y";
 
     row.addEventListener("pointerdown", e => {
@@ -838,6 +1100,7 @@ function renderMessages() {
 
   messagesBox.scrollTop = messagesBox.scrollHeight;
 }
+
 
 // HIDE MESSAGES FOR MYSELF
 function cancelSelection() {
@@ -975,8 +1238,6 @@ async function sendChatMessage(messageData, previewText) {
 
     stage = "Receiver unread count update";
 
-    // Receiver ki private settings ko READ nahi kar rahe.
-    // Sirf unreadCount ko 1 se increment kar rahe hain.
     await setDoc(
       recipientSettingsRef,
       {
@@ -1017,8 +1278,16 @@ async function sendText() {
   send.disabled = true;
 
   try {
-    await sendChatMessage({ type: "text", text }, text);
+    await sendChatMessage({
+      type: "text",
+      text,
+      ...(replyToMessage ? { replyTo: replyToMessage } : {})
+    }, text);
+
     messageInput.value = "";
+    cancelReply();
+    stopTyping();
+
     setStatus("Message sent!");
   } catch (error) {
     alert("Message error: " + error.message);
@@ -1087,9 +1356,17 @@ if (photoBtn && photoInput) {
       }
 
       await sendChatMessage(
-        { type: "photo", photo, text: "Photo" },
+        {
+          type: "photo",
+          photo,
+          text: "Photo",
+          ...(replyToMessage ? { replyTo: replyToMessage } : {})
+        },
         "Photo"
       );
+
+      cancelReply();
+      stopTyping();
 
       setStatus("Photo sent!");
     } catch (error) {
@@ -1122,6 +1399,7 @@ if ($("mobileBack")) {
     clearedAt = null;
     selecting = false;
     selectedIds.clear();
+    cancelReply();
 
     messagesBox.innerHTML = "";
     updateSelectionBar();
@@ -1138,4 +1416,9 @@ window.addEventListener("beforeunload", () => {
 
   if (stopMyConnection) stopMyConnection();
   if (stopOtherPresence) stopOtherPresence();
+  if (stopMessages) stopMessages();
+  if (stopSettings) stopSettings();
+  if (stopHidden) stopHidden();
+  if (stopOtherRead) stopOtherRead();
+  if (stopOtherTyping) stopOtherTyping();
 });
