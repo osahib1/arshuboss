@@ -1750,7 +1750,26 @@ button, input {
 
   </main>
 </div>
+<script>
+/* MOBILE KEYBOARD VIEWPORT FIX */
 
+if (window.visualViewport) {
+
+    const updateChatHeight = () => {
+        const height = window.visualViewport.height;
+
+        document.documentElement.style.setProperty(
+            "--chat-height",
+            height + "px"
+        );
+    };
+
+    window.visualViewport.addEventListener("resize", updateChatHeight);
+    window.visualViewport.addEventListener("scroll", updateChatHeight);
+
+    updateChatHeight();
+}
+</script>
 <script type="module" src="chat.js"></script>
 </body>
 </html>
