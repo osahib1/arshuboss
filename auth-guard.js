@@ -1,13 +1,13 @@
-import { initializeApp } from
-"https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
 
 import {
     getAuth,
     onAuthStateChanged,
     signOut
-} from
-"https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 
+// Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyDpdRnhuWp57slwtpIdRwS9W3pqpITr66s",
     authDomain: "arshu-9919.firebaseapp.com",
@@ -18,31 +18,107 @@ const firebaseConfig = {
     measurementId: "G-29KEM972QS"
 };
 
-const app = initializeApp(firebaseConfig);
+const app = getApps().length
+    ? getApps()[0]
+    : initializeApp(firebaseConfig);
+
 const auth = getAuth(app);
 
-const SESSION_TIME = 24 * 60 * 60 * 1000;
+// 24 hours
+const LOGIN_LIMIT = 24 * 60 * 60 * 1000;
 
-onAuthStateChanged(auth, async function(user) {
+let expiryTimer = null;
+let loggingOut = false;
+
+// Logout function
+async function forceLogout() {
+
+    if (loggingOut) return;
+
+    loggingOut = true;
+
+    clearTimeout(expiryTimer);
+
+    localStorage.removeItem("loginTime");
+
+    try {
+        await signOut(auth);
+    } catch (error) {
+        console.error("Logout error:", error);
+    }
+
+    window.location.replace("index.html");
+}
+
+// Check login expiry
+function checkExpiry(user) {
 
     if (!user) {
         window.location.replace("index.html");
         return;
     }
 
-    let loginTime = localStorage.getItem("loginTime");
+    const loginTime = Number(
+        localStorage.getItem("loginTime")
+    );
 
-    if (!loginTime) {
-        localStorage.setItem("loginTime", Date.now().toString());
-        loginTime = Date.now().toString();
+    // Missing or invalid login time
+    if (!loginTime || !Number.isFinite(loginTime)) {
+        forceLogout();
+        return;
     }
 
-    if (Date.now() - Number(loginTime) >= SESSION_TIME) {
+    const elapsed = Date.now() - loginTime;
 
-        localStorage.removeItem("loginTime");
-
-        await signOut(auth);
-
-        window.location.replace("index.html");
+    // Already 24 hours completed
+    if (elapsed >= LOGIN_LIMIT) {
+        forceLogout();
+        return;
     }
+
+    // Start remaining timer
+    clearTimeout(expiryTimer);
+
+    const remainingTime = LOGIN_LIMIT - elapsed;
+
+    expiryTimer = setTimeout(() => {
+        forceLogout();
+    }, remainingTime);
+}
+
+// Firebase login check
+onAuthStateChanged(auth, (user) => {
+    checkExpiry(user);
+});
+
+// Check again when user returns to page
+window.addEventListener("focus", () => {
+    if (auth.currentUser) {
+        checkExpiry(auth.currentUser);
+    }
+});
+
+document.addEventListener("visibilitychange", () => {
+    if (!document.hidden && auth.currentUser) {
+        checkExpiry(auth.currentUser);
+    }
+});
+
+window.addEventListener("pageshow", () => {
+    if (auth.currentUser) {
+        checkExpiry(auth.currentUser);
+    }
+});
+
+// Logout other tabs/pages when session expires
+window.addEventListener("storage", (event) => {
+
+    if (
+        event.key === "loginTime" &&
+        event.newValue === null &&
+        auth.currentUser
+    ) {
+        forceLogout();
+    }
+
 });
