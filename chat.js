@@ -542,7 +542,6 @@ async function markChatRead(chatId) {
   if (!me || !chatId) return;
 
   try {
-    // Update only own unread settings
     await setDoc(
       doc(db, "chats", chatId, "userSettings", me.uid),
       {
@@ -552,7 +551,6 @@ async function markChatRead(chatId) {
       { merge: true }
     );
 
-    // Save read receipt separately
     await setDoc(
       doc(db, "chats", chatId, "readReceipts", me.uid),
       {
@@ -728,7 +726,6 @@ async function openChat(other) {
 
     if (activeChat !== chatId) return;
 
-    // Start receipt listener only after chat document exists
     watchOtherReadStatus(chatId, other.uid);
 
     await markChatRead(chatId);
@@ -1271,8 +1268,17 @@ async function sendChatMessage(messageData, previewText) {
   }
 }
 
-// SEND TEXT
-if (send) send.onclick = sendText;
+// SEND TEXT - MOBILE KEYBOARD FIX
+if (send) {
+  send.onclick = sendText;
+
+  // Mouse click par input focus preserve karo
+  send.addEventListener("pointerdown", e => {
+    if (e.pointerType === "mouse") {
+      e.preventDefault();
+    }
+  });
+}
 
 if (messageInput) {
   messageInput.addEventListener("keydown", e => {
@@ -1302,11 +1308,18 @@ async function sendText() {
     stopTyping();
 
     setStatus("Message sent!");
+
   } catch (error) {
     alert("Message error: " + error.message);
     console.error(error);
+
   } finally {
     send.disabled = false;
+
+    // Keyboard ke liye input focus wapas
+    if (activeChat && messageInput) {
+      messageInput.focus({ preventScroll: true });
+    }
   }
 }
 
@@ -1382,12 +1395,19 @@ if (photoBtn && photoInput) {
       stopTyping();
 
       setStatus("Photo sent!");
+
     } catch (error) {
       alert("Photo send nahi hui: " + error.message);
       console.error(error);
+
     } finally {
       if (url) URL.revokeObjectURL(url);
       photoInput.value = "";
+
+      // Photo send ke baad keyboard focus
+      if (activeChat && messageInput) {
+        messageInput.focus({ preventScroll: true });
+      }
     }
   };
 }
