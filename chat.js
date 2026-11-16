@@ -42,7 +42,6 @@ const rtdb = getDatabase(app, "https://arshu-9919-default-rtdb.firebaseio.com");
 
 const VAPID_KEY = "BJlUfYA55zWObgrGZSBeim10WVhrlL9_r3XsqXYxOpTk8JEUqa5ZxNd6VFtZ3BM7PPkptg3ZdzyinECymj_rXq0";
 
-
 const notificationButton = document.createElement("button");
 notificationButton.textContent = "Enable Notifications";
 
@@ -61,11 +60,12 @@ notificationButton.style.cssText = `
 `;
 
 document.body.appendChild(notificationButton);
-
-// Permission pehle se allow hai toh button hide
+// Page load hone par notification permission check karo
 function checkNotificationPermission() {
-  if ("Notification" in window &&
-      Notification.permission === "granted") {
+  if (
+    "Notification" in window &&
+    Notification.permission === "granted"
+  ) {
     notificationButton.style.display = "none";
   } else {
     notificationButton.style.display = "block";
@@ -74,9 +74,6 @@ function checkNotificationPermission() {
 
 checkNotificationPermission();
 
-window.addEventListener("pageshow", checkNotificationPermission);
-document.addEventListener("visibilitychange", checkNotificationPermission);
-
 notificationButton.addEventListener("click", async () => {
   try {
     if (!("Notification" in window)) {
@@ -84,60 +81,69 @@ notificationButton.addEventListener("click", async () => {
       return;
     }
 
+    if (!await isSupported()) {
+      alert("Is browser mein Firebase notifications supported nahi hain.");
+      return;
+    }
+
     const permission = await Notification.requestPermission();
 
     if (permission !== "granted") {
       alert("Notification permission allow nahi hui.");
-      checkNotificationPermission();
       return;
     }
 
-    // Allow hote hi button hide
-    notificationButton.style.display = "none";
+    // const registration = await navigator.serviceWorker.register(
+    //   "./firebase-messaging-sw.js"
+    // );
 
-    if (!await isSupported()) {
-      alert("Firebase notifications supported nahi hain.");
-      return;
-    }
+    // const messaging = getMessaging(app);
 
-    if (!me) {
-      alert("Pehle login karo.");
-      return;
-    }
+    // const token = await getToken(messaging, {
+    //   vapidKey: VAPID_KEY,
+    //   serviceWorkerRegistration: registration
+    // });
+   const registration = await navigator.serviceWorker.register(
+  "/arshuboss/firebase-messaging-sw.js",
+  { scope: "/arshuboss/" }
+);
 
-    const registration = await navigator.serviceWorker.register(
-      "/arshuboss/firebase-messaging-sw.js",
-      { scope: "/arshuboss/" }
-    );
+await navigator.serviceWorker.ready;
 
-    await navigator.serviceWorker.ready;
+const messaging = getMessaging(app);
 
-    const messaging = getMessaging(app);
-
-    const token = await getToken(messaging, {
-      vapidKey: VAPID_KEY,
-      serviceWorkerRegistration: registration
-    });
-
+const token = await getToken(messaging, {
+  vapidKey: VAPID_KEY,
+  serviceWorkerRegistration: registration
+});
     if (!token) {
       alert("Notification token generate nahi hua.");
       return;
     }
 
-    await setDoc(
-      doc(db, "users", me.uid, "fcmTokens", token),
-      {
-        token: token,
-        createdAt: serverTimestamp()
-      },
-      { merge: true }
-    );
+    if (!me) {
+  alert("Pehle login karo.");
+  return;
+}
 
-    alert("Notifications successfully enabled!");
+await setDoc(
+  doc(db, "users", me.uid, "fcmTokens", token),
+  {
+    token: token,
+    createdAt: serverTimestamp()
+  },
+  { merge: true }
+);
+
+console.log("FCM token saved successfully");
+   notificationButton.textContent = "Notifications Enabled";
+notificationButton.style.display = "none";
+
+    alert("Notifications permission aur device token ready hai!");
 
   } catch (error) {
     console.error("Notification Error:", error);
-    alert("Notification error: " + error.message);
+    alert("Error: " + error.message);
   }
 });
 
@@ -1466,11 +1472,19 @@ async function sendChatMessage(messageData, previewText) {
       { merge: true }
     );
 
-    // 5. Push notification send
-    // Notification fail hone par message delete nahi hoga
-    await sendChatPushNotification(chatId, recipientUid);
+    // // 5. Push notification send
+    // // Notification fail hone par message delete nahi hoga
+    // await sendChatPushNotification(chatId, recipientUid);
 
-    return true;
+    // return true;
+
+    // 5. Push notification background mein send karo
+sendChatPushNotification(chatId, recipientUid)
+  .catch(error => {
+    console.error("Background push error:", error);
+  });
+
+return true;
 
   } catch (error) {
     console.error("FAILED STAGE:", stage, error);
@@ -1503,39 +1517,83 @@ if (messageInput) {
   });
 }
 
+// async function sendText() {
+//   const text = messageInput.value.trim();
+
+//   if (!text || !activeChat || !me) return;
+
+//   send.disabled = true;
+
+//   try {
+//     await sendChatMessage({
+//       type: "text",
+//       text,
+//       ...(replyToMessage ? { replyTo: replyToMessage } : {})
+//     }, text);
+
+//     messageInput.value = "";
+//     cancelReply();
+//     stopTyping();
+
+//     setStatus("Message sent!");
+
+//   } catch (error) {
+//     alert("Message error: " + error.message);
+//     console.error(error);
+
+//   } finally {
+//     send.disabled = false;
+
+//     // Keyboard ke liye input focus wapas
+//     if (activeChat && messageInput) {
+//       messageInput.focus({ preventScroll: true });
+//     }
+//   }
+// }
+
 async function sendText() {
   const text = messageInput.value.trim();
 
   if (!text || !activeChat || !me) return;
 
+  const chatIdAtSend = activeChat;
+
+  const messageData = {
+    type: "text",
+    text,
+    ...(replyToMessage ? { replyTo: replyToMessage } : {})
+  };
+
+  // Message box turant clear hoga
+  messageInput.value = "";
+
+  cancelReply();
+  stopTyping();
+
   send.disabled = true;
+  setStatus("Sending...");
 
   try {
-    await sendChatMessage({
-      type: "text",
-      text,
-      ...(replyToMessage ? { replyTo: replyToMessage } : {})
-    }, text);
+    await sendChatMessage(messageData, text);
 
-    messageInput.value = "";
-    cancelReply();
-    stopTyping();
-
-    setStatus("Message sent!");
+    if (activeChat === chatIdAtSend) {
+      setStatus("Message sent!");
+    }
 
   } catch (error) {
+    console.error("Message error:", error);
+
+    if (activeChat === chatIdAtSend && !messageInput.value.trim()) {
+      messageInput.value = text;
+    }
+
     alert("Message error: " + error.message);
-    console.error(error);
 
   } finally {
     send.disabled = false;
-
-    // Keyboard ke liye input focus wapas
-    if (activeChat && messageInput) {
-      messageInput.focus({ preventScroll: true });
-    }
   }
 }
+
 
 // SEND PHOTO
 if (photoBtn && photoInput) {
