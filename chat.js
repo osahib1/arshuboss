@@ -194,6 +194,34 @@ const send = $("send");
 const photoBtn = $("photoBtn");
 const photoInput = $("photoInput");
 
+// MOBILE KEYBOARD HEIGHT FIX
+
+function updateChatHeight() {
+  if (window.innerWidth > 650) return;
+
+  const height = window.visualViewport
+    ? window.visualViewport.height
+    : window.innerHeight;
+
+  document.documentElement.style.setProperty(
+    "--chat-height",
+    `${height}px`
+  );
+}
+
+updateChatHeight();
+
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", updateChatHeight);
+  window.visualViewport.addEventListener("scroll", updateChatHeight);
+}
+
+window.addEventListener("resize", updateChatHeight);
+window.addEventListener("orientationchange", () => {
+  setTimeout(updateChatHeight, 300);
+});
+
+
 function setStatus(message) {
   if ($("status")) $("status").textContent = message || "";
 }
