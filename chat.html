@@ -855,7 +855,7 @@ button, input {
   }
 }
 /* MOBILE KEYBOARD SCROLL FIX */
-
+/* 
 @media (max-width: 650px) {
 
   html,
@@ -904,6 +904,55 @@ button, input {
 
   #messageInput {
     font-size: 16px;
+  }
+} */
+
+
+/* MOBILE CHAT LAYOUT FIX */
+@media (max-width: 650px) {
+
+  .chat-app {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--chat-height, 100dvh);
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .chat-main {
+    flex: 1 1 0;
+    height: 0;
+    min-height: 0;
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+  }
+
+  body.chat-open .chat-main {
+    display: flex;
+  }
+
+  #messages {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  .chat-header,
+  #replyPreview,
+  .input-area,
+  #status {
+    flex-shrink: 0;
+  }
+
+  .input-area {
+    position: relative;
+    width: 100%;
   }
 }
   
@@ -971,7 +1020,7 @@ button, input {
 
   </main>
 </div>
-<script>
+<!-- <script>
 /* MOBILE KEYBOARD VIEWPORT FIX */
 
 if (window.visualViewport) {
@@ -990,7 +1039,7 @@ if (window.visualViewport) {
 
     updateChatHeight();
 }
-</script>
+</script> -->
 <script type="module" src="chat.js"></script>
 </body>
 </html>
