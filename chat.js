@@ -194,20 +194,6 @@ const send = $("send");
 const photoBtn = $("photoBtn");
 const photoInput = $("photoInput");
 
-// // MOBILE KEYBOARD HEIGHT FIX
-
-// function updateChatHeight() {
-//   if (window.innerWidth > 650) return;
-
-//   const height = window.visualViewport
-//     ? window.visualViewport.height
-//     : window.innerHeight;
-
-//   document.documentElement.style.setProperty(
-//     "--chat-height",
-//     `${height}px`
-//   );
-// }
 // MOBILE KEYBOARD HEIGHT FIX
 
 function updateChatHeight() {
@@ -222,6 +208,7 @@ function updateChatHeight() {
     `${height}px`
   );
 }
+
 
 updateChatHeight();
 
