@@ -194,20 +194,53 @@ const send = $("send");
 const photoBtn = $("photoBtn");
 const photoInput = $("photoInput");
 
-// MOBILE KEYBOARD HEIGHT FIX
+// // MOBILE KEYBOARD HEIGHT FIX
 
+// function updateChatHeight() {
+//   if (window.innerWidth > 650) return;
+
+//   const height = window.visualViewport
+//     ? window.visualViewport.height
+//     : window.innerHeight;
+
+//   document.documentElement.style.setProperty(
+//     "--chat-height",
+//     `${height}px`
+//   );
+// }
+
+// MOBILE KEYBOARD AND CHAT HEIGHT FIX
 function updateChatHeight() {
   if (window.innerWidth > 650) return;
 
-  const height = window.visualViewport
-    ? window.visualViewport.height
-    : window.innerHeight;
+  const viewport = window.visualViewport;
+
+  const height = viewport ? viewport.height : window.innerHeight;
+  const top = viewport ? viewport.offsetTop : 0;
 
   document.documentElement.style.setProperty(
     "--chat-height",
     `${height}px`
   );
+
+  document.documentElement.style.setProperty(
+    "--chat-top",
+    `${top}px`
+  );
 }
+
+updateChatHeight();
+
+if (window.visualViewport) {
+  window.visualViewport.addEventListener("resize", updateChatHeight);
+  window.visualViewport.addEventListener("scroll", updateChatHeight);
+}
+
+window.addEventListener("resize", updateChatHeight);
+
+window.addEventListener("orientationchange", () => {
+  setTimeout(updateChatHeight, 300);
+});
 
 updateChatHeight();
 
