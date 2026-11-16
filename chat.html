@@ -854,7 +854,7 @@ button, input {
     padding: 0 11px;
   }
 }
- /* MOBILE KEYBOARD SCROLL FIX */
+/* MOBILE KEYBOARD SCROLL FIX */
 
 @media (max-width: 650px) {
 
@@ -866,15 +866,15 @@ button, input {
     overscroll-behavior: none;
   }
 
-  .chat-app {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 100%;
-    min-height: 0;
-    overflow: hidden;
-  }
+.chat-app {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--chat-height, 100dvh);
+  min-height: 0;
+  overflow: hidden;
+}
 
   .chat-main {
     height: 100%;
