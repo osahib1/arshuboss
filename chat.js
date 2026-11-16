@@ -59,116 +59,7 @@ notificationButton.style.cssText = `
   cursor:pointer;
 `;
 
-// document.body.appendChild(notificationButton);
-
-// notificationButton.addEventListener("click", async () => {
-//   try {
-//     if (!("Notification" in window)) {
-//       alert("Is browser mein notifications supported nahi hain.");
-//       return;
-//     }
-
-//     if (!await isSupported()) {
-//       alert("Is browser mein Firebase notifications supported nahi hain.");
-//       return;
-//     }
-
-//     const permission = await Notification.requestPermission();
-
-//     if (permission !== "granted") {
-//       alert("Notification permission allow nahi hui.");
-//       return;
-//     }
-
-//     // const registration = await navigator.serviceWorker.register(
-//     //   "./firebase-messaging-sw.js"
-//     // );
-
-//     // const messaging = getMessaging(app);
-
-//     // const token = await getToken(messaging, {
-//     //   vapidKey: VAPID_KEY,
-//     //   serviceWorkerRegistration: registration
-//     // });
-//    const registration = await navigator.serviceWorker.register(
-//   "/arshuboss/firebase-messaging-sw.js",
-//   { scope: "/arshuboss/" }
-// );
-
-// await navigator.serviceWorker.ready;
-
-// const messaging = getMessaging(app);
-
-// const token = await getToken(messaging, {
-//   vapidKey: VAPID_KEY,
-//   serviceWorkerRegistration: registration
-// });
-//     if (!token) {
-//       alert("Notification token generate nahi hua.");
-//       return;
-//     }
-
-//     if (!me) {
-//   alert("Pehle login karo.");
-//   return;
-// }
-
-// await setDoc(
-//   doc(db, "users", me.uid, "fcmTokens", token),
-//   {
-//     token: token,
-//     createdAt: serverTimestamp()
-//   },
-//   { merge: true }
-// );
-
-// console.log("FCM token saved successfully");
-//     notificationButton.textContent = "Notifications Enabled";
-
-//     alert("Notifications permission aur device token ready hai!");
-
-//   } catch (error) {
-//     console.error("Notification Error:", error);
-//     alert("Error: " + error.message);
-//   }
-// });
-
-
-const notificationButton = document.createElement("button");
-notificationButton.textContent = "Enable Notifications";
-
-notificationButton.style.cssText = `
-  position:fixed;
-  bottom:20px;
-  right:15px;
-  z-index:99999;
-  padding:12px 18px;
-  border:0;
-  border-radius:25px;
-  background:#075e54;
-  color:white;
-  font-size:14px;
-  cursor:pointer;
-`;
-
-function updateNotificationButton() {
-  if (!("Notification" in window)) {
-    notificationButton.style.display = "none";
-    return;
-  }
-
-  notificationButton.style.display =
-    Notification.permission === "granted" ? "none" : "block";
-}
-
 document.body.appendChild(notificationButton);
-updateNotificationButton();
-
-document.addEventListener("visibilitychange", () => {
-  if (!document.hidden) {
-    updateNotificationButton();
-  }
-});
 
 notificationButton.addEventListener("click", async () => {
   try {
@@ -185,48 +76,56 @@ notificationButton.addEventListener("click", async () => {
     const permission = await Notification.requestPermission();
 
     if (permission !== "granted") {
-      updateNotificationButton();
       alert("Notification permission allow nahi hui.");
       return;
     }
 
-    updateNotificationButton();
+    // const registration = await navigator.serviceWorker.register(
+    //   "./firebase-messaging-sw.js"
+    // );
 
-    const registration = await navigator.serviceWorker.register(
-      "/arshuboss/firebase-messaging-sw.js",
-      { scope: "/arshuboss/" }
-    );
+    // const messaging = getMessaging(app);
 
-    await navigator.serviceWorker.ready;
+    // const token = await getToken(messaging, {
+    //   vapidKey: VAPID_KEY,
+    //   serviceWorkerRegistration: registration
+    // });
+   const registration = await navigator.serviceWorker.register(
+  "/arshuboss/firebase-messaging-sw.js",
+  { scope: "/arshuboss/" }
+);
 
-    const messaging = getMessaging(app);
+await navigator.serviceWorker.ready;
 
-    const token = await getToken(messaging, {
-      vapidKey: VAPID_KEY,
-      serviceWorkerRegistration: registration
-    });
+const messaging = getMessaging(app);
 
+const token = await getToken(messaging, {
+  vapidKey: VAPID_KEY,
+  serviceWorkerRegistration: registration
+});
     if (!token) {
       alert("Notification token generate nahi hua.");
       return;
     }
 
     if (!me) {
-      alert("Pehle login karo.");
-      return;
-    }
+  alert("Pehle login karo.");
+  return;
+}
 
-    await setDoc(
-      doc(db, "users", me.uid, "fcmTokens", token),
-      {
-        token: token,
-        createdAt: serverTimestamp()
-      },
-      { merge: true }
-    );
+await setDoc(
+  doc(db, "users", me.uid, "fcmTokens", token),
+  {
+    token: token,
+    createdAt: serverTimestamp()
+  },
+  { merge: true }
+);
 
-    console.log("FCM token saved successfully");
-    alert("Notifications successfully enabled!");
+console.log("FCM token saved successfully");
+    notificationButton.textContent = "Notifications Enabled";
+
+    alert("Notifications permission aur device token ready hai!");
 
   } catch (error) {
     console.error("Notification Error:", error);
