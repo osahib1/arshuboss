@@ -1,3 +1,4 @@
+
 import {
   initializeApp, getApps, getApp
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
@@ -59,6 +60,19 @@ notificationButton.style.cssText = `
 `;
 
 document.body.appendChild(notificationButton);
+// Page load hone par notification permission check karo
+function checkNotificationPermission() {
+  if (
+    "Notification" in window &&
+    Notification.permission === "granted"
+  ) {
+    notificationButton.style.display = "none";
+  } else {
+    notificationButton.style.display = "block";
+  }
+}
+
+checkNotificationPermission();
 
 notificationButton.addEventListener("click", async () => {
   try {
@@ -122,7 +136,8 @@ await setDoc(
 );
 
 console.log("FCM token saved successfully");
-    notificationButton.textContent = "Notifications Enabled";
+   notificationButton.textContent = "Notifications Enabled";
+notificationButton.style.display = "none";
 
     alert("Notifications permission aur device token ready hai!");
 
@@ -131,6 +146,7 @@ console.log("FCM token saved successfully");
     alert("Error: " + error.message);
   }
 });
+
 
 
 const $ = id => document.getElementById(id);
