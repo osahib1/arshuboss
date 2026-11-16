@@ -1566,6 +1566,7 @@ async function sendText() {
 
   // Message box turant clear hoga
   messageInput.value = "";
+  messageInput.focus({ preventScroll: true });
 
   cancelReply();
   stopTyping();
