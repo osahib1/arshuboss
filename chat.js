@@ -61,6 +61,13 @@ notificationButton.style.cssText = `
 
 document.body.appendChild(notificationButton);
 
+function checkNotificationPermission() {
+  if (Notification.permission === "granted") {
+    notificationButton.remove();
+  }
+}
+
+checkNotificationPermission();
 notificationButton.addEventListener("click", async () => {
   try {
     if (!("Notification" in window)) {
@@ -74,6 +81,10 @@ notificationButton.addEventListener("click", async () => {
     }
 
     const permission = await Notification.requestPermission();
+
+    if (permission === "granted") {
+  notificationButton.remove();
+}
 
     if (permission !== "granted") {
       alert("Notification permission allow nahi hui.");
