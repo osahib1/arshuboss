@@ -679,6 +679,7 @@ function messageIsVisible(message, id) {
   return true;
 }
 
+
 // LOGIN
 onAuthStateChanged(auth, user => {
   if (!user) {
@@ -695,8 +696,12 @@ onAuthStateChanged(auth, user => {
   }
 
   me = user;
+
   startMyPresence(user.uid);
   startRecentChats();
+
+  // Notification par click karne se wahi chat open hogi
+  openChatFromNotification();
 });
 
 // SEARCH USER
