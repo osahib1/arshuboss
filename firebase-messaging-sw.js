@@ -14,35 +14,36 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging();
 
-messaging.onBackgroundMessage(payload => {
+messaging.onBackgroundMessage((payload) => {
   const senderName = payload.data?.senderName || "New message";
   const chatId = payload.data?.chatId || "";
 
+  const targetUrl = new URL(
+    "/arshuboss/chat.html?chatId=" + encodeURIComponent(chatId),
+    self.location.origin
+  ).href;
+
   self.registration.showNotification(senderName, {
     body: "New message",
-    icon: "./favicon.ico",
+    icon: "/arshuboss/favicon.ico",
     data: {
-      chatId: chatId,
-      url: "/arshuboss/chat.html?chatId=" + encodeURIComponent(chatId)
+      url: targetUrl
     },
     tag: chatId ? "chat-" + chatId : "new-message"
   });
 });
 
-self.addEventListener("notificationclick", event => {
+self.addEventListener("notificationclick", (event) => {
   event.notification.close();
 
-  const data = event.notification.data || {};
-  const targetUrl = new URL(
-    data.url || "/arshuboss/chat.html",
-    self.location.origin
-  ).href;
+  const targetUrl = event.notification.data?.url ||
+    new URL("/arshuboss/chat.html", self.location.origin).href;
 
   event.waitUntil(
     clients.matchAll({
       type: "window",
       includeUncontrolled: true
-    }).then(async windowClients => {
+    }).then(async (windowClients) => {
       for (const client of windowClients) {
         if ("navigate" in client) {
           await client.navigate(targetUrl);
