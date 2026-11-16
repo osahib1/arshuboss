@@ -42,6 +42,7 @@ const rtdb = getDatabase(app, "https://arshu-9919-default-rtdb.firebaseio.com");
 
 const VAPID_KEY = "BJlUfYA55zWObgrGZSBeim10WVhrlL9_r3XsqXYxOpTk8JEUqa5ZxNd6VFtZ3BM7PPkptg3ZdzyinECymj_rXq0";
 
+
 const notificationButton = document.createElement("button");
 notificationButton.textContent = "Enable Notifications";
 
@@ -60,12 +61,11 @@ notificationButton.style.cssText = `
 `;
 
 document.body.appendChild(notificationButton);
-// Page load hone par notification permission check karo
+
+// Permission pehle se allow hai toh button hide
 function checkNotificationPermission() {
-  if (
-    "Notification" in window &&
-    Notification.permission === "granted"
-  ) {
+  if ("Notification" in window &&
+      Notification.permission === "granted") {
     notificationButton.style.display = "none";
   } else {
     notificationButton.style.display = "block";
@@ -74,6 +74,9 @@ function checkNotificationPermission() {
 
 checkNotificationPermission();
 
+window.addEventListener("pageshow", checkNotificationPermission);
+document.addEventListener("visibilitychange", checkNotificationPermission);
+
 notificationButton.addEventListener("click", async () => {
   try {
     if (!("Notification" in window)) {
@@ -81,69 +84,60 @@ notificationButton.addEventListener("click", async () => {
       return;
     }
 
-    if (!await isSupported()) {
-      alert("Is browser mein Firebase notifications supported nahi hain.");
-      return;
-    }
-
     const permission = await Notification.requestPermission();
 
     if (permission !== "granted") {
       alert("Notification permission allow nahi hui.");
+      checkNotificationPermission();
       return;
     }
 
-    // const registration = await navigator.serviceWorker.register(
-    //   "./firebase-messaging-sw.js"
-    // );
+    // Allow hote hi button hide
+    notificationButton.style.display = "none";
 
-    // const messaging = getMessaging(app);
+    if (!await isSupported()) {
+      alert("Firebase notifications supported nahi hain.");
+      return;
+    }
 
-    // const token = await getToken(messaging, {
-    //   vapidKey: VAPID_KEY,
-    //   serviceWorkerRegistration: registration
-    // });
-   const registration = await navigator.serviceWorker.register(
-  "/arshuboss/firebase-messaging-sw.js",
-  { scope: "/arshuboss/" }
-);
+    if (!me) {
+      alert("Pehle login karo.");
+      return;
+    }
 
-await navigator.serviceWorker.ready;
+    const registration = await navigator.serviceWorker.register(
+      "/arshuboss/firebase-messaging-sw.js",
+      { scope: "/arshuboss/" }
+    );
 
-const messaging = getMessaging(app);
+    await navigator.serviceWorker.ready;
 
-const token = await getToken(messaging, {
-  vapidKey: VAPID_KEY,
-  serviceWorkerRegistration: registration
-});
+    const messaging = getMessaging(app);
+
+    const token = await getToken(messaging, {
+      vapidKey: VAPID_KEY,
+      serviceWorkerRegistration: registration
+    });
+
     if (!token) {
       alert("Notification token generate nahi hua.");
       return;
     }
 
-    if (!me) {
-  alert("Pehle login karo.");
-  return;
-}
+    await setDoc(
+      doc(db, "users", me.uid, "fcmTokens", token),
+      {
+        token: token,
+        createdAt: serverTimestamp()
+      },
+      { merge: true }
+    );
 
-await setDoc(
-  doc(db, "users", me.uid, "fcmTokens", token),
-  {
-    token: token,
-    createdAt: serverTimestamp()
-  },
-  { merge: true }
-);
-
-console.log("FCM token saved successfully");
-   notificationButton.textContent = "Notifications Enabled";
-notificationButton.style.display = "none";
-
-    alert("Notifications permission aur device token ready hai!");
+    alert("Notifications successfully enabled!");
 
   } catch (error) {
     console.error("Notification Error:", error);
-    alert("Error: " + error.message);
+    alert("Notification error: " + error.message);
   }
 });
 
