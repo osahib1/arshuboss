@@ -20,7 +20,7 @@ import {
 import {
   getMessaging,
   getToken,
-deleteToken,
+  deleteToken,
   isSupported
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging.js";
 
@@ -74,7 +74,36 @@ function checkNotificationPermission() {
 
 checkNotificationPermission();
 
-const registration = await navigator.serviceWorker.register(
+notificationButton.addEventListener("click", async () => {
+  try {
+    if (!("Notification" in window)) {
+      alert("Is browser mein notifications supported nahi hain.");
+      return;
+    }
+
+    if (!await isSupported()) {
+      alert("Is browser mein Firebase notifications supported nahi hain.");
+      return;
+    }
+
+    const permission = await Notification.requestPermission();
+
+    if (permission !== "granted") {
+      alert("Notification permission allow nahi hui.");
+      return;
+    }
+
+    // const registration = await navigator.serviceWorker.register(
+    //   "./firebase-messaging-sw.js"
+    // );
+
+    // const messaging = getMessaging(app);
+
+    // const token = await getToken(messaging, {
+    //   vapidKey: VAPID_KEY,
+    //   serviceWorkerRegistration: registration
+    // });
+   const registration = await navigator.serviceWorker.register(
   "/arshuboss/firebase-messaging-sw.js",
   { scope: "/arshuboss/" }
 );
@@ -83,15 +112,10 @@ await navigator.serviceWorker.ready;
 
 const messaging = getMessaging(app);
 
-const token = await getToken(messaging, {
-  vapidKey: VAPID_KEY,
-  serviceWorkerRegistration: registration
-});
+// PURANA TOKEN DELETE KARO
+await deleteToken(messaging);
 
-await navigator.serviceWorker.ready;
-
-const messaging = getMessaging(app);
-
+// NAYA TOKEN GENERATE KARO
 const token = await getToken(messaging, {
   vapidKey: VAPID_KEY,
   serviceWorkerRegistration: registration
