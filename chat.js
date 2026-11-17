@@ -18,9 +18,16 @@ import {
   serverTimestamp as rtdbServerTimestamp
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
+// import {
+//   getMessaging,
+//   getToken,
+//   isSupported
+// } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging.js";
+
 import {
   getMessaging,
   getToken,
+  deleteToken,
   isSupported
 } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-messaging.js";
 
@@ -61,20 +68,36 @@ notificationButton.style.cssText = `
 
 document.body.appendChild(notificationButton);
 // Page load hone par notification permission check karo
+// function checkNotificationPermission() {
+//   if (
+//     "Notification" in window &&
+//     Notification.permission === "granted"
+//   ) {
+//     notificationButton.style.display = "none";
+//   } else {
+//     notificationButton.style.display = "block";
+//   }
+// }
+
 function checkNotificationPermission() {
-  if (
-    "Notification" in window &&
-    Notification.permission === "granted"
-  ) {
+  if (!("Notification" in window)) {
     notificationButton.style.display = "none";
-  } else {
-    notificationButton.style.display = "block";
+    return;
   }
+
+  notificationButton.style.display = "block";
+
+  notificationButton.textContent =
+    Notification.permission === "granted"
+      ? "Refresh Notifications"
+      : "Enable Notifications";
 }
 
 checkNotificationPermission();
 
-notificationButton.addEventListener("click", async () => {
+checkNotificationPermission();
+
+ notificationButton.addEventListener("click", async () => {
   try {
     if (!("Notification" in window)) {
       alert("Is browser mein notifications supported nahi hain.");
@@ -103,6 +126,7 @@ notificationButton.addEventListener("click", async () => {
     //   vapidKey: VAPID_KEY,
     //   serviceWorkerRegistration: registration
     // });
+
    const registration = await navigator.serviceWorker.register(
   "/arshuboss/firebase-messaging-sw.js",
   { scope: "/arshuboss/" }
@@ -146,7 +170,6 @@ notificationButton.style.display = "none";
     alert("Error: " + error.message);
   }
 });
-
 
 
 const $ = id => document.getElementById(id);
